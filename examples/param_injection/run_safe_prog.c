@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+/*
+ * Matthias Gerstner
+ * SUSE Linux GmbH
+ * matthias.gerstner@suse.com
+ *
+ * Example of a vulnerable program.
+ *
+ * This program attempts to start a program on your behalf, but only one of a
+ * defined subset that you may select by number via stdin.
+ *
+ * Imagine this would be a setuid-root program running with root privileges.
+ */
+
+const char* const ALLOWED_PROGS[] = {
+	"/usr/bin/ls",
+	"/usr/bin/who"
+};
+
+const char* const default_prog = ALLOWED_PROGS[0];
+
+void runprog() {
+	const char *prog_to_run = default_prog;
+	char selection[32] = {0};
+	char *parsing_end = NULL;
+	unsigned long index = 0;
+
+	// this is just a little help for exploiting this program
+	printf("[selection ptr is at %p]\n", selection);
+
+	scanf("%s", selection);
+	index = strtoul(selection, &parsing_end, 10);
+
+	if (parsing_end == selection) {
+		fprintf(stderr, ">>> non-numeric input, using default prog\n");
+
+	} else if (index < sizeof(ALLOWED_PROGS) / sizeof(char*)) {
+		prog_to_run = ALLOWED_PROGS[index];
+
+	} else {
+		fprintf(stderr, ">>> invalid program index, using default\n");
+	}
+
+	printf("\n============\nRunning program '%s'\n============\n", prog_to_run);
+
+	execl(prog_to_run, prog_to_run, NULL);
+
+	fprintf(stderr, ">>> Failed to run program!\n");
+}
+
+int main() {
+	runprog();
+
+	return 0;
+}
+

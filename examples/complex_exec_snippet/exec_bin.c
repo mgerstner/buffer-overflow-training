@@ -1,0 +1,66 @@
+#include <stdio.h>
+
+/*
+ * Matthias Gerstner
+ * SUSE Linux GmbH
+ * matthias.gerstner@suse.com
+ */
+
+/*
+ * This function finds the location of the return address (i.e. void**) on the
+ * stack. `start` needs to be the a 8-byte aligned start address on the stack
+ * to start with and `cur_ret` needs to be the current return address.
+ *
+ * There is no really realiable way to get this address otherwise, since
+ * there's usually no need to achieve this programmatically.
+ */
+void** get_return_address_ptr(void **start, void *cur_ret) {
+	int i;
+
+	// We need to reach the return address, it is found some locations
+	// after the location of the local stack parameter. this logic will
+	// fail if `start` is not on a 8-byte boundary. For safety reasons
+	// don't continue until we reach the end of the stack but just look
+	// into the first few qwords until we give up.
+	for (i = 0; i < 32; i++) {
+		start++;
+
+		if (*start == cur_ret)
+			return start;
+	}
+
+	return NULL;
+}
+
+void main() {
+	// This builtin gcc function allows to retrieve the current return address value
+	void *ret = __builtin_return_address(0);
+	void **retp = get_return_address_ptr(&ret, ret);
+
+	/*
+	 * this is binary x86_64 code extracted from the exec_asm.c binary that
+	 * performs an exec system call for "/bin/sh -c \"you've been hacked\"" and
+	 * then, should the exec() fail for some reason, calls exit(0);
+	 */
+	char execve_code[] = {
+	  0xeb, 0x49, 0x5b, 0x48, 0x89, 0x5b, 0x37, 0x48, 0x8d, 0x4b, 0x09, 0x48,
+	  0x89, 0x4b, 0x3f, 0x48, 0x8d, 0x4b, 0x0c, 0x48, 0x89, 0x4b, 0x47, 0xc6,
+	  0x43, 0x07, 0x00, 0xc6, 0x43, 0x0b, 0x00, 0xc6, 0x43, 0x25, 0x00, 0x48,
+	  0xc7, 0x43, 0x4f, 0x00, 0x00, 0x00, 0x00, 0x48, 0xc7, 0xc0, 0x3b, 0x00,
+	  0x00, 0x00, 0x48, 0x89, 0xdf, 0x48, 0x8d, 0x73, 0x37, 0x48, 0x8d, 0x53,
+	  0x4f, 0x0f, 0x05, 0x48, 0x89, 0xc3, 0x48, 0xc7, 0xc0, 0x01, 0x00, 0x00,
+	  0x00, 0xcd, 0x80, 0xe8, 0xb2, 0xff, 0xff, 0xff, 0x2f, 0x62, 0x69, 0x6e,
+	  0x2f, 0x73, 0x68, 0x58, 0x00, 0x2d, 0x63, 0x00, 0x65, 0x63, 0x68, 0x6f,
+	  0x20, 0x22, 0x79, 0x6f, 0x75, 0x27, 0x76, 0x65, 0x20, 0x62, 0x65, 0x65,
+	  0x6e, 0x20, 0x68, 0x61, 0x63, 0x6b, 0x65, 0x64, 0x22, 0x00
+	};
+
+	if (!retp) {
+		fprintf(stderr, "Failed to determine return address location!\n");
+		return;
+	}
+
+	// overwrite the return address to be our injected binary code
+	(*retp) = (void*)execve_code;
+}
+
