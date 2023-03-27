@@ -688,7 +688,7 @@ Assembler: Some Basic Instructions
 |`push`                   | put some data on the stack, advancing %rsp
 |`pop`                    | removes some data from the top of the stack, storing it in a register/memory location, reduces %rsp
 |`call`                   | continues execution at some other function address, puts the current %rip as return address onto the stack
-|`ret`                    | copies `%ebp` to `%esp` and restores old `%ebp` from the stack
+|`ret`                    | returns to code address stored at the top of the stack, removes it also from the stack by incrementing `%esp`
 |`enter`                  | pushes `%ebp` onto the stack, copies %esp into `%ebp`
 |`leave`                  | copies `%ebp` to %esp and restores old %ebp from the stack
 |`lea`                    | load effective address, computes the address of the offset from a base pointer e.g. for arrays, e.g. `lea rax, [rbx+8]` would put the address of the pointer in rbx plus an offset of 8 into register `%rax`.
@@ -714,8 +714,8 @@ basic rules:
   target is the second: `mov %rbx %rax` will copy the contents of the `rbx`
   register into the `rax` register (think: move from ... to ...).
 * Addressing offsets (pointer dereferences) are specified like this: `mov
-  -8(%ebp), %rax`. This would
-  copy a 32-bit value located eight bytes from the current stack frame into
+  -8(%rbp), %rax`. This would
+  copy a 64-bit value located eight bytes from the current stack frame into
   `rax`.
 * Especially for addressing and pointer handling there exists more complex
   syntax that we won't study in detail here.
@@ -772,6 +772,7 @@ and 'x86_64'.
 | Parameter Registers
                 (ordered) | `%ebx, %ecx, %edx, %esi, %edi, %ebp`
                                          | `%rdi, %rsi, %rdx, %r10, %r8, %r9`
+| Return Code Register    | `%eax`       |   `%rax`
 |====================================================
 
 The system call numbers differ between i386 and x86_64 and can be found in
@@ -1046,8 +1047,8 @@ statements in a way that avoids the terminating bytes.
 * For this the bare CPU instructions need to be checked whether they contain
 any of the problematic bytes and look for equivalent command sequences
 that avoid having to put the bytes in question into the code sequence.
-* Example: replacing __mov $0 %rax__ by __xorq %rax %rax__ avoids any null
-bytes but achieves the same result of getting the value of 0 into `%rax`.
+* Example: replacing __mov $0 %rbx__ by __xorq %rbx %rbx__ avoids any null
+bytes but achieves the same result of getting the value of 0 into `%rbx`.
 
 // hint that there have even been concepts like putting the C library into an
 // address space that always contained a null byte
@@ -1206,7 +1207,7 @@ Even in pure C programming there are difficulties:
 to hard to find surprises (see example folder `lost_memset`).
 * Data can even be left behind in registers and for example for accelerated
 cryptographic operations some rare registers might be used that will not be
-typically overwritten by other code (e.g. MXX, SSE extensions).
+typically overwritten by other code (e.g. MMX, SSE extensions).
 * The low-level handling implemented by the compiler may cause data to be
 swapped in and out of registers, leaving copies of data on the stack without
 our knowledge.
