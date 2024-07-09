@@ -1628,6 +1628,69 @@ downsides to this.
 * Use `hardening-check` on executables or libraries to check for enabled stack
 protection.
 
+Protection Mechanisms Against Stack Overflows: Shadow Stack
+-----------------------------------------------------------
+
+Shadow stacks are a rather recent addition to CPUs and operating systems. The
+idea is somewhat similar to stack canary values. The return address is not
+only pushed to the usual location on the stack, but also to a second memory
+region, called the shadow stack.
+
+Before jumping back to the return address, the actual return address and the
+copy placed on the shadow stack are compared, if the comparison fails, then
+the process is aborted.
+
+[role="incremental"]
+This second memory region can either be setup purely in software, using memory
+mapping techniques and additionally generated code. The feature will become
+more robust and involve less overhead when the CPU provides additional
+hardware support for this. More recent Intel and AMD x86 CPUs as well as some
+ARM CPUs support this by now.
+
+[role="incremental"]
+The hardware support involves specially secured shadow stack memory pages that
+are restricted to individual processes and cannot be shared. The setup of
+these pages is restricted to the privileged kernel mode. In userspace, writing
+to and reading from the shadow stack is not done directly via memory
+addresses, but via specially added CPU instructions.
+
+Protection Mechanisms Against Stack Overflows: Shadow Stack II
+--------------------------------------------------------------
+
+Compared to stack canary values the advantages of the shadow stack are that
+the comparison values reside in different memory ranges i.e. overflowing just
+the regular stack won't be enough, even if the canary values would be known.
+With proper hardware and memory setup, writing to the copy of the return
+address is even plain impossible.
+
+[role="incremental"]
+Although the shadow stack feature sounds rather straight forward on paper,
+there have been https://lwn.net/Articles/885220[quite some complications] in
+getting this to work transparently in userspace. There are various situations
+where applications might need full control over the stack setup, and if they
+are not aware of the shadow stack feature being in effect, then they will
+break.
+
+[role="incremental"]
+Provided your system has hardware support for the shadow stack, to check for
+its presence you need to look out for the kernel support being enabled:
+
+[role="incremental"]
+----
+$ zgrep CONFIG_X86_USER_SHADOW_STACK /proc/config.gz
+CONFIG_X86_USER_SHADOW_STACK=y
+----
+
+[role="incremental"]
+A specific process can be checked for shadow stack pages this way:
+
+[role="incremental"]
+----
+$ cat /proc/self/smaps |& grep VmFlags | grep -w ss
+VmFlags: rd ex mr mw me de ss
+[...]
+----
+
 Protection Mechanisms Against Stack Overflows: Fortify Source Macro
 -------------------------------------------------------------------
 
