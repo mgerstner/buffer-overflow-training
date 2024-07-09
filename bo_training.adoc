@@ -171,7 +171,7 @@ Why Even Bother about this "old school" Low Level Stuff?
 There is an ongoing shift in educational content for engineers and in the daily
 work of many computer scientists. The C programming language as the
 predominant one in the Linux ecosystem is slowly fading and is being replaced
-by safer and more abstract ones like `Rust` or `Golang`. Classical buffer
+by safer and more abstract ones like Rust or Golang. Classical buffer
 overflows are no major concern there anymore. Why should we even bother to
 understand the "old" low level stuff?
 
@@ -250,7 +250,7 @@ Preparations for Debugging a C/C++ based Program: Debug Symbols
 * Debug symbols can include a checksum to detect mismatches between binary
   and debug symbols.
 * Side note: There is an effort to achieve `reproducible builds` of programs
-  which also allows to verify the correctness and trustworthyness of the
+  which also allows to verify the correctness and trustworthiness of the
   binaries in a distribution independently.
 
 
@@ -594,7 +594,7 @@ So what is Assembler exactly?
   code).
 * The assembler (like a rather simple compiler) translates the assembler
   language into machine code. It performs a couple of sanity checks for each
-  instruction to avoid obvious inconcistencies.
+  instruction to avoid obvious inconsistencies.
 * Each assembler instruction directly translates into one machine instruction.
 * On assembler level there is no abstraction of the CPU architecture. Thus the
   assembler code needs to be specific to the processor architecture. It looks
@@ -643,7 +643,7 @@ A register does not have a memory address, only its unique name (or number, on
 machine code level).
 
 [role="incremental"]
-This shows: The stack concept is not only an operating system / programing
+This shows: The stack concept is not only an operating system / programming
 language choice but goes even down to the machine instruction and register
 set.
 
@@ -736,7 +736,7 @@ be accessed by way of the kernel.
 * We need to differentiate between system call wrappers, which are function
 calls in glibc, and the actual system call. In man pages this is separated in
 section 2 like `man 2 exit` for system calls and section 3 like `man 3 exit`
-or `man 3p exit` for libc / posix library calls. A popular example is `man 2
+or `man 3p exit` for libc / POSIX library calls. A popular example is `man 2
 clone` vs. `man 3p fork`.
 * For regular function calls the compiler is free to organize the passing of
 parameters any way it wants. Before executing a system call, however, all
@@ -836,7 +836,7 @@ needs to be specified.
 
 [role="incremental"]
 **Note:** The term "word" can be ambiguous, because on hardware and software
-level it has been used in the past refering to the basic register width of the
+level it has been used in the past referring to the basic register width of the
 first processor generation it was designed for. E.g. in the Microsoft WIN32
 system programming API a WORD is still 16 bits while a DWORD is 32 bits
 ("double").
@@ -970,7 +970,7 @@ operating system developers etc. If calling conventions don't match
 between different functions then trouble is ahead (for example: Microsoft
 Windows allows switching between `fastcall` and `stdcall`).
 * If functions are declared `static` and are thereby locally defined in a
-compilation unit then the compiler can perform more agressive optimizations,
+compilation unit then the compiler can perform more aggressive optimizations,
 because it knows of all callers and callees and can make assumptions that
 wouldn't be possible if a function is exported e.g. for use in a dynamically
 loaded library. This can for example allow to relax the requirements to backup
@@ -1277,7 +1277,7 @@ implement length restrictions.
 [role="incremental"]
 ** Enable the maximum warning level of the compiler, except for diagnostics
    that might be more noise than value.
-** Use 'valgrind' to detect invalid memory read/write, undefined data usage,
+** Use `valgrind` to detect invalid memory read/write, undefined data usage,
 memory leaks (it is not perfect for stack issues though).
 ** Test with builds compiled with `-fsanitize=address` which will add
 transparent routines to detect memory errors during runtime.
@@ -1477,7 +1477,7 @@ Protection Mechanisms Against Stack Overflows: ASLR IV
 Some practical tips:
 
 [role="incremental"]
-* Running a program in 'gdb' disables ASLR by default for getting reproducable
+* Running a program in 'gdb' disables ASLR by default for getting reproducible
 addresses between individual runs.
 * You can get/set the status in 'gdb' via `info disable-randomization` and
 `set disable-randomization [on|off]`.
@@ -1811,14 +1811,14 @@ heap allocation that will be placed just into that memory location.
 memory. Imagine some "harmless" description text that is stored on the heap.
 Some other part of the program now points to that data, assuming some pointers
 or other application specific data still lives there. By manipulating the
-"harmless" description text the attacker now also controlls completely
+"harmless" description text the attacker now also controls completely
 unrelated data.
 * By skillfully constructing the data in the heap buffer it might
 be possible to cause unintended program behaviour or even arbitrary code
 execution. Each case is individual to the vulnerable application though.
 
-Heap Unitialized Data
----------------------
+Heap Uninitialized Data
+-----------------------
 
 [role="incremental"]
 * Similarly to what we've seen for the stack, any new memory obtained via
@@ -1893,6 +1893,3 @@ of the book are for beginners in programming in general, but the assembler
 part is good to understand. For x86_64 assembler you'll need to adjust the
 concepts:
 ** 'Programming from the Ground Up': https://savannah.nongnu.org/projects/pgubook/
-
-// provide example code via DropBox step by step?
-// final stuff for reference can be distributed via git repo or tarball
