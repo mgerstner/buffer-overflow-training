@@ -1,14 +1,14 @@
 Inspecting the Stack Frame Handling
 ===================================
 
-This program is not much more than a simple function call with a parameter
+This C program is not much more than a simple function call with a parameter
 passed and some local variables put onto the stack by caller and callee.
 
 Building and Disassembling the Program
 --------------------------------------
 
 Build and disassemble this program for a better understanding of the stack
-frame logic.
+frame logic as it is performed by an actual C compiler.
 
 ```sh
 $ make

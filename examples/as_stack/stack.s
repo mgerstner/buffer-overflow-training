@@ -3,21 +3,24 @@
 	# SUSE Linux GmbH
 	# matthias.gerstner@suse.com
 	#
-	# this declares the start code label where execution is started when
+	# this declares the start code label where execution begins when
 	# the program is started by the kernel.
 	.global _start
 
 	# this declares a code section
 	.text
-
-	# print a string on stdout
-	# expects two parameters on the stack:
+ 
+	# entry point for a print(const char*, size_t) function
+	#
+	# purpose: print a string to stdout
+	#
+	# expects two parameters passed on the stack:
 	# - (const char*) pointer: string data to print
 	# - (uint64_t): 64-bit unsigned integer: length of string data, excluding '\0' terminator
-print:				# entry point for a print(const char*, size_t) function
+print:
 	push	%rbp		# save the previous stack base pointer on the stack
-	mov	%rsp, %rbp	# the current top of the stack is where our own stack base for hellofunc() is now starting
-	# save the contents of required registers on the stack, since we want to use them for our own purposes
+	mov	%rsp, %rbp	# the current top of the stack is where our own stack frame for this function starts
+	# save the contents of registers we want to use on the stack, since we want to use them for our own purposes
 	push	%rax
 	push	%rdx
 	push	%rdi
@@ -25,11 +28,11 @@ print:				# entry point for a print(const char*, size_t) function
 	# setup the write(int fd, const void*, size_t) system call
 	mov	$1, %rax	# system call 1 is write
 	mov	$1, %rdi	# parameter 1: file handle 1 is stdout
-	mov	0x18(%rbp),%rsi # get the pointer to the string to print into %rsi
-	mov	0x10(%rbp),%rdx # get the string length into %rdx
-	syscall			# invoke operating system to perform the syscall
+	mov	0x18(%rbp),%rsi # place the first input parameter (pointer to the string to print) into %rsi
+	mov	0x10(%rbp),%rdx # place the second input parameter (the string length) into %rdx
+	syscall			# request the operating system to perform the configured syscall
 
-	# restore original register contents by popping in reverse
+	# restore original register contents by popping data back from the stack in reverse
 	pop	%rsi
 	pop	%rdi
 	pop	%rdx
@@ -46,7 +49,7 @@ loop_start:
 	movq	$message, 0x08(%rsp) # store the pointer to "Hello, world\n" on the stack as first parameter to print()
 	movq	$13, (%rsp)	# store the immediate value 13 as size specification for the second parameter to print()
 	callq	print		# stores the return address on the stack and jumps to the print() function
-	add	$0x10,%rsp	# free 16 bytes to remove parameters to print() from stack
+	add	$0x10,%rsp	# free 16 bytes to remove parameters to print() again from stack
 
 	# loop handling
 	dec	%rax		# decrement the loop counter

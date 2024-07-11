@@ -22,10 +22,10 @@
  */
 
 int main() {
-	// For completeness this exit system call approach uses the 32-bit
+	// For completeness this exit system call uses the 32-bit
 	// i686 calling convention for Linux.
 	// This only works for register values <= 32 bit, higher bits will be
-	// zeroed out. this approach will also be slower than the amd64
+	// zeroed out. This approach will also be slower than the AMD64
 	// syscall instruction (when running on x86_64 hardware, of course).
 	__asm__(
 		"movl $0x1, %eax\n"
@@ -33,4 +33,3 @@ int main() {
 		"int $0x80"
 	);
 }
-

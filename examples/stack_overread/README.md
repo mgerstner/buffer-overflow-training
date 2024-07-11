@@ -2,8 +2,12 @@ Stack Buffer Overread
 =====================
 
 This program has a stack buffer overread problem. It is caused by missing
-zero-initializion and not communicating back the number of bytes actually
+zero-initialization and not communicating back the number of bytes actually
 read.
+
+NOTE: Technically this program does not _overread_ a stack buffer, but it
+reads from an uninitialized stack buffer. The effects are very similar,
+though.
 
 Exercises
 =========

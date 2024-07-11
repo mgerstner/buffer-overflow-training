@@ -23,7 +23,7 @@ The still somewhat difficult part now is to find a suitable return address
 that will hit our NOP instructions. Otherwise the program will just crash with
 SIGILL or SIGSEGV. First you need a shell without 'address space
 randomization' which is a security feature to make these kind of overflows
-more difficult. You can call `make shell` to get a subshell that is configured
+more difficult. You can call `make shell` to get a sub-shell that is configured
 to disable this feature.
 
 Then you can try to find out the stack address of the overflowing buffer
@@ -34,18 +34,18 @@ perfectly. Then you parametrize the python script to create a suitable exploit
 buffer.
 
 Save the exploit data in a file and pass the file to the vulnerable program
-(not via stdin but as a parameter). On success a new shell should be started
+(not via stdin, but as a parameter). On success a new shell should be started
 as a result of the code execution.
 
 NOTE: The reason why feeding the exploit on `stdin` seemingly doesn't work is
 that stdin will be in the EOF state and the exploit *will* work but the shell
-that is started will detected the closed `stdin` stream and exit immediately.
+that is started will detect the closed `stdin` stream and exit immediately.
 
 Exercises
 =========
 
 - Experiment with different return addresses and see that if you hit any of
-  the NOP instructions the exploit will still trigger.
+  the NOP instructions, the exploit will still trigger.
 - Dissect the exploit data to understand its structure.
 - Manipulate the injected machine code for `execve()` to call a different
   binary or perform a completely different system call (like creating a new

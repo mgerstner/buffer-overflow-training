@@ -21,9 +21,8 @@ const char* const ALLOWED_PROGS[] = {
 	"/usr/bin/who"
 };
 
-const char* const default_prog = ALLOWED_PROGS[0];
-
 void runprog() {
+	const char* const default_prog = ALLOWED_PROGS[0];
 	const char *prog_to_run = default_prog;
 	char selection[32] = {0};
 	char *parsing_end = NULL;
@@ -32,17 +31,20 @@ void runprog() {
 	// this is just a little help for exploiting this program
 	printf("[selection ptr is at %p]\n", selection);
 
+	printf("enter program index > ");
+	fflush(stdout);
+
 	scanf("%s", selection);
 	index = strtoul(selection, &parsing_end, 10);
 
 	if (parsing_end == selection) {
-		fprintf(stderr, ">>> non-numeric input, using default prog\n");
+		fprintf(stderr, "\n>>> non-numeric input, using default prog\n");
 
 	} else if (index < sizeof(ALLOWED_PROGS) / sizeof(char*)) {
 		prog_to_run = ALLOWED_PROGS[index];
 
 	} else {
-		fprintf(stderr, ">>> invalid program index, using default\n");
+		fprintf(stderr, "\n>>> invalid program index, using default prog\n");
 	}
 
 	printf("\n============\nRunning program '%s'\n============\n", prog_to_run);

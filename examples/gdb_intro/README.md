@@ -15,6 +15,9 @@ packages can be installed as *root* (or via `sudo`) like this:
 
 ### Using `debuginfod` Instead
 
+NOTE: this feature is currently broken, because the debuginfo servers are
+unavailable.
+
 Alternatively, if on openSUSE Tumbleweed, you can use the `debuginfod` feature
 which will allow you to transparently download debug symbols for system
 packages. In this case you should make the use of this feature permanent by
@@ -49,7 +52,7 @@ different behaviour of `gdb` with the two versions.
 Invoke the Program in `gdb`
 ---------------------------
 
-There are various possiblities to do this:
+There are various possibilities to do this:
 
 1. Simply point `gdb` to the program: `gdb ./gdbtest`.
 2. Pass parameters directly on the command line: `gdb --args ./gdbtest somepar`.
@@ -63,6 +66,16 @@ By typing `start` the program will start but stop right away in the `main()`
 function. If all went well then you should be able to see the first source
 line in the `main()` function and be able to inspect the running program.
 
+NOTE: In recent openSUSE Tumbleweed installations attaching even to your own
+processes is not allowed by default anymore, for reasons of security
+hardening. To overcome this you can either:
+
+- install the package `aaa_base-yama-enable-ptrace`. This will permanently
+  disable the security feature (should only be done on test or dedicated
+  development systems).
+- execute `sysctl kernel.yama.ptrace_scope=0` to disable the hardening until
+  the next reboot.
+
 Experimenting with `gdb`
 ------------------------
 
@@ -74,8 +87,8 @@ Running a System Program in `gdb`
 
 Let's try to debug the `ls` program.
 
-When using debuginfo package then we first we need to find out which package
-it is belonging to:
+When using the debuginfo package then we first we need to find out which
+package it is belonging to:
 
     $ rpm -qf /usr/bin/ls
     coreutils-8.31-2.1.x86_64

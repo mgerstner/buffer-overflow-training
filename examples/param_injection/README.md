@@ -23,7 +23,7 @@ Exercises
   understand its structure. Note: Due to x86 processors using "little-endian"
   byte order, the exploit buffer will seem to have addresses in reverse, when
   looking at it e.g. with `xxd`. `xxd` has options to make this easier on the
-  eyes: `xxd -e -g8` displays groups of 8 bytes (a single word on amd64) in
+  eyes: `xxd -e -g8` displays groups of 8 bytes (a single word on AMD64) in
   the "correct" order.
 - Single step in `gdb` and watch the overflow change the stack parameters
   which will cause the change in behaviour of the program.
@@ -33,6 +33,6 @@ Notes
 
 - Even when running in the specially prepared shell provided by the `make
   shell` target, the address of the stack buffer will change slightly when run
-  from different contexts like from the python script `replace_param.py`. Pay
-  attention to the address printed out by the program to make sure you have the
-  right one.
+  from different environments like from the python script `replace_param.py`, or
+  from `gdb`. Pay attention to the address printed out by the program to make
+  sure you have the right one for the environment you're running it in.

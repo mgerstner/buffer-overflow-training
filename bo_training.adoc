@@ -13,7 +13,8 @@ About the SUSE Security Team
 === Where to find us
 
 [role="incremental"]
-* Find us on our website http://www.suse.com/security
+* Find us on https://www.suse.com/security[our website].
+* Follow https://security.opensuse.org[our blog].
 * Contact us on our mailing list at security@suse.de
 * On our internal IRC in `#security`
 * On Slack in `#discuss-security`
@@ -90,7 +91,7 @@ About Me
 [role="incremental"]
 * 10 years experience as a Software developer and architect in embedded and
   security focused areas.
-* For nearly 7 years now in the security review business.
+* Since 2017 now in the security review business.
 * Mostly system programming in `C` and `C++`.
 * Cross platform development Windows/Linux/QNX.
 * Linux experience for about 20 years.
@@ -117,6 +118,9 @@ how to exploit them.
 * This training is supposed to be hands-on and to provide practical guidance for
   the everyday work as a programmer. Interleaved with the theory we will talk
   about, we will be looking at and experimenting with practical examples.
+* The training is structured in a bottom-up style. We will learn the lowest
+  level concepts first and then start combining them to more complex
+  constructs.
 
 Structure of the Training
 -------------------------
@@ -140,11 +144,11 @@ Structure of the Training
 * Day 4
 [role="incremental"]
 ** Modern protection mechanisms against common types of exploits.
-** Dangers that still remain even with todays protection technology.
-** A look onto heap buffer overflow issues.
+** Dangers that still remain even with today's protection technology.
+** A look onto heap buffer overflow issues (if time allows).
 
-Prerequisites
--------------
+Prerequisites for this Training
+-------------------------------
 
 [role="incremental"]
 * General understanding of C programming.
@@ -160,7 +164,7 @@ experiment with them on your own during and after the training:
 [role="incremental"]
 ** You will need a computer running openSUSE or similar Linux.
 ** The instructions in the examples have been tested on openSUSE Tumbleweed
-   and on Leap 15.4
+   and on current openSUSE Leap.
 ** You need to have installed a suitable development environment (`zypper install -t pattern
 devel_C_C++`) and GDB (`zypper install gdb`).
 ** And some extra packages that will be mentioned as we encounter them.
@@ -177,15 +181,15 @@ understand the "old" low level stuff?
 
 [role="incremental"]
 * A lot of existing C programs will continue to accompany us probably for more
-  decades to come so some people will have to deal with it the one way or the
+  decades to come, so some people will have to deal with it the one way or the
   other.
 * The new programming languages are not better on all levels. If it is about
-  low footprint and full control classical C or C++ might still be viable
-  candidates to use even for new projects. Or for the modern programming
+  low footprint and full control, classical C or C++ might still be viable
+  candidates to use, even for new projects. Or for the modern programming
   environments themselves to be created.
 * The reality on the lower levels of computing doesn't change even if we use
   modern programming languages. Understanding the principles of how the
-  computer and the operating system work usually make you a better programmer,
+  computer and the operating system work will make you a better programmer,
   Admin etc. even if you don't act on this level in your everyday work.
 
 An Introduction to 'gdb'
@@ -211,8 +215,8 @@ An Introduction to 'gdb'
    functions to some extent.
 * There also exist graphical frontends to 'gdb' of varying quality that are
   supposed to ease its use (e.g. 'ddd', 'kdbg', 'nemiver'). But knowing the ropes
-  on the command line is always useful and efficient so that's why we
-  concentrate on that. The command line doesn't need any extra setup, is also
+  on the command line is always useful and efficient so that's why we will
+  be concentrating on that. The command line doesn't need any extra setup, is also
   easily available remotely via SSH and provides the full feature set that 'gdb'
   offers.
 * 'gdb' also supports a basic terminal based UI called 'tui' that is an
@@ -229,18 +233,18 @@ Preparations for Debugging a C/C++ based Program: Debug Symbols
 ---------------------------------------------------------------
 
 [role="incremental"]
-* To make any sense of a binary program 'gdb' needs the _debug
+* To make any sense of a binary program, 'gdb' needs the _debug
   symbols_ associated with it.
 * These symbols basically define which identifiers (e.g. function and variable
   names) exist, what their types are and where they can be found in the
   executable and therefore in program memory.
-* Because these symbols are rather large (a lot of additional strings) they're
-  not kept in the final binary program installed on a Linux distribution.
-  They're _stripped_ off the binary.
-* When actively developing a program then you can simply pass the `-g` switch
+* Because these symbols are rather large (a lot of additional strings and
+  metadata) they're not kept in the final binary program installed on a Linux
+  distribution.  They're _stripped_ off the binary.
+* When actively developing a program, then you can simply pass the `-g` switch
   to 'gcc' or 'g++' to have it generate debug symbols and store them in the
   resulting binary.
-* When trying to debug an existing program from the Linux distribution then
+* When trying to debug an existing program from your Linux distribution then
   you will need to install a separate _debuginfo_ package that contains the
   debug symbols for each binary of a package in a separate file.
 * The debug symbols always need to exactly match the binary to be debugged.
@@ -259,7 +263,7 @@ Preparations for Debugging a C/C++ based Program: Debug Source
 
 [role="incremental"]
 * For the debugger to be able to display the current location in the source
-  code that matches the current program state it needs to have the original
+  code that matches the current program state, it needs to have the original
   source available that was used to compile the binary.
 * The paths to the source code are also encoded in the debug symbol
   information. 'gdb' will try to lookup the source code in the file system
@@ -289,7 +293,7 @@ General `gdb` Shell Behaviour
 
 [role="incremental"]
 * The `gdb` shell uses a concept to look for a matching prefix of a command
-  and accepts it if it is unique. For example `r`, `ru` and `run` are all
+  and accepts it, if it is unique. For example `r`, `ru` and `run` are all
   recognized as the `run` command.
 * You can use tab completion like in the `bash` shell to complete commands and
   get a list of supported commands.
@@ -313,7 +317,7 @@ Basic `gdb` Commands: Controlling the Program Flow
 |c[ontinue] [count] | Continue program execution until a stop event occurs, optionally skipping a breakpoint `count` times.
 |n[ext] [count]     | Continue execution until the next source code line
 |s[tep] [count]     | Like `next` but if a function is executed, enter it (step-in)
-|u[ntil] [location] | Continue *past* the current line or (e.g. to skip loops)
+|u[ntil] [location] | Continue *past* the given (or current) line (e.g. to skip loops)
 |====================================================
 
 Basic `gdb` Commands: Inspecting the Program Data
@@ -375,14 +379,16 @@ Common `gdb` Pitfalls
   For system programs this shouldn't happen, because checksums are used.
 * The debugger only **roughly** matches source code lines to machine code.
   In complex scenarios `gdb` may not be able to correctly match them.
-  Especially with well optimized code the execution flow at times seemingly
-  jumps around wildly in the source code, because the compiler reordered
-  instructions in the machine code.
+  Today's compiler optimization is pretty advanced, thus the execution
+  flow at times seemingly jumps around wildly in the source code, because the
+  compiler reordered instructions in the machine code.
 * In optimized code the values of certain variables may not be accessible
   anymore (**optimized out**). This can be a difficult situation; sometimes
   changing into a different program context can make the contents visible. In
   the end only a look into the assembler code may make it clear what happened,
   which needs a lot of time investment.
+  If possible, building an debug version of the program might be the better
+  alternative for easier debugging.
 
 Excursion: Compile vs. Link vs. Runtime
 ---------------------------------------
@@ -403,12 +409,12 @@ Excursion: Compile vs. Link vs. Runtime
 ** Link time is when the linking stage of a program in the build procedure is
    reached. For C programming this means that all the generated machine code
    found in object files is merged into an executable program or library. During
-   this stage addresses might need to be calculated such that e.g. functions can
+   this stage, addresses need to be calculated such that e.g. functions can
    be called correctly. Data is organized in different sections like constant
-   data into one section while read/write data in another, code in another and so
-   on. Beyond the program itself this also includes any external libraries
+   data into one section, while read/write data in another, code in another and so
+   on. Beyond the program itself, this also includes any external libraries
    that the program uses.
-** Errors found during link time are already somewhat more expensive, consider
+** Errors found during link time are already somewhat more expensive. Consider
    different programmers working together and they have a name clash for a
    function or global variable: They will only find out once all machine code
    is linked together and the linker complains about a duplicate symbol
@@ -425,16 +431,16 @@ Excursion: Compile vs. Link vs. Runtime
    used to find the cause of the error, a new fixed program or patch has to be 
    provided.
 ** Even worse are logical errors during runtime i.e. the program does not
-   visibly crash but it produces wrong results (e.g. infinite loop, no
+   visibly crash, but it produces wrong results (e.g. infinite loop, no
    operation at all or corrupted/wrong data is produced).
 
 Stack vs. Heap: Two Different Kinds of Memory Allocation
 --------------------------------------------------------
 
-For understanding Assembler and buffer overflows we need a good understanding
+For understanding Assembler and buffer overflows, we need a good understanding
 of low level memory management. In higher level languages there is only
-"memory", in C programming we already have to deal more directly with it but
-in Assembler there are a lot of dirty details we usually don't see.
+"memory", in C programming we have to deal more directly with it, but in
+Assembler there are a lot of dirty details we usually don't see.
 
 The Heap: Dynamic Memory Allocation
 -----------------------------------
@@ -452,8 +458,8 @@ contents, databases etc.
   video or displaying an image can require all different amounts of memory
   depending on input).
 * The actual system call involved is `brk()`. The kernel only hands out a
-  single block of memory to the process that needs to be split up by the C
-  library or similar memory management routine.
+  single block of memory to the process that needs to be split up and managed
+  by the C library or similar memory management routine.
 
 The Stack: Automatic Memory Allocation during Program Flow
 ----------------------------------------------------------
@@ -462,7 +468,7 @@ The Stack: Automatic Memory Allocation during Program Flow
 * Strictly grows and shrinks linearly, by pushing data on top for the current
   function call and popping data after returning from function calls (LIFO -
   last in, first out).
-* Can only allocate space for objects of known size during compile time (with
+* Can only allocate space for objects of a size known during compile time (with
   a few exceptions e.g. stack based dynamic arrays in 'C99' and newer
   standards, or via `alloca()`).
 * Objects on the stack cannot change size during runtime.
@@ -494,8 +500,8 @@ regular applications that run under the kernel's supervision, they are the
 * User space applications usually can't directly access hardware and certain
   machine / CPU features. Instead they have to go through the kernel.
 * They also only get computation time at the kernel's will (scheduling).
-* In contrast kernel threads have arbitrary access to everything in the
-  machine and can for example easily crash the complete machine if something
+* In contrast, kernel threads have arbitrary access to everything in the
+  machine and can for example easily crash the complete machine, if something
   goes wrong.
 * This kind of memory and resource protection is what makes modern
   operating systems much more resilient than (by now) historical operating
@@ -526,19 +532,19 @@ image::images/addr_space_layout3.png[align="center"]
   process in the system. So the address is the same but the memory behind it
   is different for each process.
 * Note: Even in the kernel, virtual addresses are increasingly used in some
-  areas (e.g. `CONFIG_VMAP_STACK`), this figure here is just a basic model.
+  areas (e.g. `CONFIG_VMAP_STACK`). This figure here is just a basic model.
 
 Looking at the Address Space of a Sample Application
 ----------------------------------------------------
 
-* Let's examine the different memory reagions in a simple C program.
+* Let's examine the different memory regions in a simple C program.
 * *Hands-on*: see example folder 'address_space_basics'
 
 About Processor Bit Width
 -------------------------
 
-When we talk about 32-bit or 64-bit CPUs then this is a bit fuzzy sometimes
-what it entails.
+When we talk about 32-bit or 64-bit CPUs then it is sometimes a bit fuzzy what
+it entails.
 
 [role="incremental"]
 At the core it refers to the width (word size) of the registers in a CPU:
@@ -593,9 +599,9 @@ So what is Assembler exactly?
   instead of just plain numbers (which are actually found in the raw machine
   code).
 * The assembler (like a rather simple compiler) translates the assembler
-  language into machine code. It performs a couple of sanity checks for each
+  language into machine code. It performs a couple of sanity checks for every
   instruction to avoid obvious inconsistencies.
-* Each assembler instruction directly translates into one machine instruction.
+* Every assembler instruction directly translates into one machine instruction.
 * On assembler level there is no abstraction of the CPU architecture. Thus the
   assembler code needs to be specific to the processor architecture. It looks
   very different for 'arm' compared to 'x86' compared to 'powerpc' etc.
@@ -604,9 +610,9 @@ Understanding assembler code is way more difficult than understanding a C
 program, because it is much larger than an equivalent C program and much less
 descriptive.
 [role="incremental"]
-With the time we have in this training we can still only scratch the surface
+With the time we have in this training we can only scratch the surface
 of Assembler programming. You should try to get a feeling for how it works and
-what the concepts are. But you don't need to remember each instruction or
+what the concepts are. But you don't need to remember every instruction or
 register involved.
 
 Assembler: The Basic Registers of the x86 CPU
@@ -615,11 +621,11 @@ Assembler: The Basic Registers of the x86 CPU
 === What is a register?
 
 [role="incremental"]
-A register is a very small but very fast type of memory that is an integral
+A register is a very small but very fast type of memory, that is an integral
 part of the CPU. Each register has a designated name and some also have a
 special purpose. Most registers can store one "word" i.e. the basic word size
 of a processor which is 32-bit for an i386 based CPU and 64-bit for an AMD64
-based CPU. Most calculations can only happen in registers so the processor
+based CPU. Most calculations can only happen in registers, so the processor
 needs to load data from system memory into registers, operate on it, and
 store results back into system memory.
 
@@ -633,9 +639,9 @@ architectures.
 |====================================================
 ^|i386 (32-bit) footnote:[the E prefix is for 'extended'] ^| x86_64 (64-bit) footnote:[the R prefix is for 'register'] ^| Description
 |ebp           | rbp             | stack base pointer, where the current stack frame starts
-|esp           | rsp             | stack top pointer, here new function local data can be placed
+|esp           | rsp             | stack top pointer, here new function-local data can be placed
 |eip           | rip             | instruction pointer
-|eax, ebx, ecx edx | rax, rbx, ... r8 .. r15        | general purpose data
+|eax, ebx, ecx, edx | rax, rbx, ... r8 .. r15        | general purpose data
 |====================================================
 
 [role="incremental"]
@@ -644,7 +650,7 @@ machine code level).
 
 [role="incremental"]
 This shows: The stack concept is not only an operating system / programming
-language choice but goes even down to the machine instruction and register
+language design, but goes even down to the machine instruction and register
 set.
 
 Assembler: Register Naming Scheme
@@ -662,10 +668,11 @@ Assembler: Register Naming Scheme
 |====================================================
 
 [role="incremental"]
-The special meaning of these registers is mostly lost today and therefore on
-'x86_64' there have just been added general-purpose registers `r8` to `r15`.
-In this context the old school registers can be viewed as `r0` to `r7` but
-they're still used with their classical names.
+The special meaning of these registers was only useful in manually written
+assembler code. Thus it is mostly lost today and on 'x86_64', which has eight
+additional registers, they have only been named general-purpose registers `r8`
+to `r15`.  In this context, the previously existing registers can be viewed as
+`r0` to `r7`, but they're still used with their classical names.
 
 [role="incremental"]
 `rbp` and `rsp` are the only semantic registers that still serve their
@@ -685,13 +692,13 @@ Assembler: Some Basic Instructions
 |====================================================
 ^|Instruction              ^| Description
 |`mov`                    | move data between two registers/memory locations
-|`push`                   | put some data on the stack, advancing %rsp
-|`pop`                    | removes some data from the top of the stack, storing it in a register/memory location, reduces %rsp
-|`call`                   | continues execution at some other function address, puts the current %rip as return address onto the stack
-|`ret`                    | returns to code address stored at the top of the stack, removes it also from the stack by incrementing `%esp`
+|`push`                   | put some data on the stack, advancing `%rsp`
+|`pop`                    | removes some data from the top of the stack, storing it in a register/memory location, reduces `%rsp`
+|`call`                   | continues execution at some other memory address, puts the current `%rip` as return address onto the stack
+|`ret`                    | returns execution to the memory address stored at the top of the stack, removes it also from the stack by incrementing `%esp`
 |`enter`                  | pushes `%ebp` onto the stack, copies %esp into `%ebp`
-|`leave`                  | copies `%ebp` to %esp and restores old %ebp from the stack
-|`lea`                    | load effective address, computes the address of the offset from a base pointer e.g. for arrays, e.g. `lea rax, [rbx+8]` would put the address of the pointer in rbx plus an offset of 8 into register `%rax`.
+|`leave`                  | copies `%ebp` to `%esp` and restores old `%ebp` from the stack
+|`lea`                    | load effective address, computes the address of the offset from a base pointer e.g. for arrays, e.g. `lea rax, [rbx+8]` would put the address of the pointer in `%rbx` plus an offset of 8 into register `%rax`.
 |====================================================
 
 // NOTE: hand out individual slides like the register table for better
@@ -701,13 +708,13 @@ Assembler: AT&T Syntax
 ----------------------
 
 There exist two different Assembler syntaxes for x86 assembler. We are using
-'AT&T' syntax while there also exists an 'Intel' syntax. The 'AT&T' syntax is
+'AT&T' syntax, while there also exists an 'Intel' syntax. The 'AT&T' syntax is
 used in `gdb`, the GNU assembler and other standard Linux utilities. 'Intel'
 syntax is more popular in the Windows world. 'AT&T' syntax has the following
 basic rules:
 
 [role="incremental"]
-* Registers are prefixed with a `%` sign like `%rax`.
+* Register references are prefixed with a `%` sign like `%rax`.
 * 'immediate' values (constants) are prefixed with a `$` sign like
   `$10`.
 * In move operations the transfer source is the first parameter, the transfer
@@ -738,59 +745,82 @@ calls in glibc, and the actual system call. In man pages this is separated in
 section 2 like `man 2 exit` for system calls and section 3 like `man 3 exit`
 or `man 3p exit` for libc / POSIX library calls. A popular example is `man 2
 clone` vs. `man 3p fork`.
-* For regular function calls the compiler is free to organize the passing of
+* For regular function calls, the compiler is free to organize the passing of
 parameters any way it wants. Before executing a system call, however, all
 necessary parameters for the system call need to be placed into registers in
 the correct order, according to documentation (interface contract).
 * On i386 Linux a system call is triggered via software interrupt `0x80`.
-This approach is still supported on x86_64, but only for 32-bit emulation and
-values larger than 32 bits cannot be passed to the kernel this way. So this may
-cause strange behaviour if passing large pointers for example.
+This approach is still supported on x86_64, but only for 32-bit emulation.
+Values larger than 32 bits cannot be passed to the kernel this way. So this may
+cause strange behaviour if passing large pointers, for example.
 * On x86_64 Linux a system call is triggered via a dedicated `syscall`
 processor instruction.
 * During the system call, control is transferred to the kernel and the kernel
 code inspects the parameters, whether the requesting process is permitted to
-do what it asks for and on success performs the requested operation.
+do what it asks for, and on success performs the requested operation.
 * After the system call is complete any output / return parameters are placed
 into registers or userspace memory depending on the system call contract and
 control is returned back to the userspace program to continue working.
 * Knowing about this is also interesting for performance reasons. System calls
-are rather expensive compared to function calls and the amount of them should
+are rather expensive compared to function calls, thus their amount should
 be minimized.
 
 Assembler: System Call Conventions
 ----------------------------------
 
-A quick look onto the conventions for system call parameter passing on 'i386'
-and 'x86_64'.
+Following are the conventions for system call parameter passing on Linux on
+'i386' and 'x86_64'.
 
 [cols="h,2*",width="75%",options="header",align="center"]
 |====================================================
 |                        ^| i386        ^|    x86_64
 | System Call Instruction | `int 0x80`   |  `syscall`
-| System Call Nr. Register| `%eax`       |  `%rax`
+| System Call Nr# Register| `%eax`       |  `%rax`
 | Parameter Registers
                 (ordered) | `%ebx, %ecx, %edx, %esi, %edi, %ebp`
                                          | `%rdi, %rsi, %rdx, %r10, %r8, %r9`
 | Return Code Register    | `%eax`       |   `%rax`
 |====================================================
 
-The system call numbers differ between i386 and x86_64 and can be found in
+The system call numbers differ between 'i386' and 'x86_64' and can be found in
 '/usr/include/asm-x86/unistd_{32,64}.h'.
+
+Assembler: The User Space and Kernel Space Side System Call Handling
+--------------------------------------------------------------------
+
+[role="incremental"]
+- A userspace program usually doesn't directly deal with system calls, but the
+  C library wraps them. There is a small helper function called `syscall()`
+  (see `man 2 syscall`) that can be used to directly invoke an arbitrary
+  system call, though. You can experiment with this.
+- On the kernel side the actual spots where system calls take place
+  are hidden behind various layers, because of the large amount of system
+  calls, and the various architectures with their specific needs that need to
+  be covered.
+- In the kernel sources at Git tag `v6.9`, for the 'x86_64' architecture, the
+  situation is as follows:
+[role="incremental"]
+** the generic system call entry point is named `x64_sys_call()` and found in
+   the file `arch/x86/entry/syscall_64.c`.
+** the system call number defitions are found in file `arch/x86/include/generated/asm/syscalls_64.h`.
+** the definition of e.g. the `exit()` system call is found in file
+   `kernel/exit.c` line 992 `SYSCALL_DEFINE1(exit, int, error_code)`. This is
+   the code that will run once any process in the system invokes the `exit()`
+   system call.
 
 Assembler: A Hello World Program
 ---------------------------------
 
-* With what we know so far we will finally write a small standalone assembler
+* With what we know so far, we will finally write a small standalone assembler
   program.
 * *Hands-on*: see example folder 'as_intro'.
 
 Assembler: Register Addressing Modes
 ------------------------------------
 
-Because of the history of the x86 architecture which started out with 16 bits
+Because of the history of the x86 architecture, which started out with 16 bits
 on the 8086 and currently is at 64 bits on 'x86_64' - and for easier/more
-compact coding - we can access each register with different bit widths.
+compact coding, each register can be accessed with different bit widths.
 
 [role="incremental"]
 The following table shows the relation of the differently named registers. 1
@@ -805,7 +835,7 @@ The following table shows the relation of the differently named registers. 1
 4+|                 4+| *32-Bit*|
 4+|                 4+| `eax, ebx, ecx, ...`| "extended"
 6+|                   2+| *16-Bit*|
-6+|                   2+| `ax, bx, cx, ...`| 'x' is historical
+6+|                   2+| `ax, bx, cx, ...`| 'x' is historical, no special meaning.
 6+|                     | *8-Bit* | *8-Bit*|
 6+|                     | `ah, bh, ch, ...`    | `al, bl, cl, ...` | high, low
 //|ax, bx, ...   | lower 16-bit width part of eax/rax, ebx/rbx etc.
@@ -816,8 +846,8 @@ Assembler: Instruction Width Suffixes
 -------------------------------------
 
 Most assembler instructions can operate on different register widths by
-appending a suffix. An example for the `mov` instruction, copying the constant
-(also called immediate value) zero into the first register.
+appending a suffix. These are example `mov` instructions, for copying the
+constant (also called immediate value) zero into the first register.
 
 [width="75%",options="header",align="center"]
 |====================================================
@@ -836,10 +866,10 @@ needs to be specified.
 
 [role="incremental"]
 **Note:** The term "word" can be ambiguous, because on hardware and software
-level it has been used in the past referring to the basic register width of the
+level it has been used in the past to refer to the basic register width of the
 first processor generation it was designed for. E.g. in the Microsoft WIN32
 system programming API a WORD is still 16 bits while a DWORD is 32 bits
-("double").
+("double word").
 
 [role="incremental"]
 On a more abstract level a processor word is the canonical data width it
@@ -860,8 +890,8 @@ On 32-Bit x86 processors there are only 8 general purpose registers available.
 Thus registers are a precious resource and organizing them efficiently was
 very important on the PC. This processor architecture has been infamous even
 in its infancy for its complexity, other processors (Motorola 68k) already had
-up to 16 registers and the upcoming RISC processors starting around the year
-1990 (MIPS, Sparc) already had up to 32 registers.
+up to 16 registers and the RISC processors released around the year 1990
+(MIPS, Sparc) already had up to 32 registers.
 
 [role="incremental"]
 More registers do not necessarily mean everything is better. It also has its
@@ -870,8 +900,8 @@ system calls, switching between the execution of different programs) can slow
 down.
 
 [role="incremental"]
-On 'x86_64' the processor finally has 16 general purpose registers and the
-pressure to manage them efficiently is reduced a lot. The complexity
+On 'x86_64' the processor finally arrived at 16 general purpose registers and
+the pressure to manage them efficiently has been reduced a lot. The complexity
 of the 32-bit mode remains but the 64-bit mode is more cleanly organized.
 
 About Functions Calls
@@ -890,7 +920,8 @@ About Functions Calls
 ** The output parameters need to be returned to the caller of the function in
    a similar way after the function execution has finished.
 ** Certain state of the program / processor before the function call happened
-   needs to be saved and restored after the function call has finished.
+   needs to be saved on entry and restored after the function call has
+   finished.
 * What is a call stack?
 ** It is the series of function calls that are active at a given time at
    program execution. It is what you see when you enter 'bt' in `gdb`.
@@ -899,7 +930,7 @@ How is the Stack Organized?
 ---------------------------
 
 [role="incremental"]
-* A function call needs to be generic enough such that it works no matter from
+* A function's code needs to be generic enough for it to work no matter from
   where in the program and in which program state it is called.
 * For each function call that is performed, a _stack frame_ is setup
   that holds all the local variables and possibly input parameters passed to
@@ -942,8 +973,16 @@ Implementing a Function Call in Assembler
 Looking at the Stack Frame Disassembly of a Sample Program
 ----------------------------------------------------------
 
-* We'll examine a practical example with a simple C program.
+[role="incremental"]
+* Now that we've implemented our own function call in assembler, let's check
+  what an actual compiler does, when a function call occurs in a C program.
 * *Hands-on*: See example folder 'stack_frame'.
+* From the assembler we have seen so far we can see that managing memory
+  allocations on the stack is really simple and efficient. It consists just of
+  the subtraction (allocation) and addition (deallocation) of the pointer in
+  the '%rsp' register.
+* The setup and cleanup code for function calls always looks similar and is
+  present in the code for all functions.
 
 Some Hints Regarding Assembler
 ------------------------------
@@ -951,15 +990,15 @@ Some Hints Regarding Assembler
 [role="incremental"]
 * Assembler is __highly CPU and OS specific__ and even differs between i386 /
 x86_64, because of differently named instructions, register sizes etc.
-* When disassembling code that was compiled with __optimizations__ then it
+* When disassembling code that was compiled with __optimizations__, then it
 will be considerably more difficult to understand what is going on, because
 the compiler reorders instructions, removes instructions and changes the way
 parameters are passed to functions and so on. There are also compiler switches
-like `-fomit-frame-pointer`.
+like `-fomit-frame-pointer`, that further complicate things.
 * For x86 CPUs there are two different __styles of assembly__ notation called AT&T
 and Intel style. One of the main differences is the order in which registers
 are written down: AT&T style shows the source register first, Intel style
-shows the target register first. On Linux ('gcc', 'gdb') AT&T style is mostly
+shows the target register first. On Linux ('gcc', 'gdb') mostly AT&T style is
 used.
 * Depending on OS, CPU and sometimes also on the compiler different
 __calling conventions__ exist. These conventions define in which way
@@ -968,9 +1007,9 @@ caller needs to do and what the callee needs to do.  Sometimes / some parts of
 these conventions are defined by the CPU design, sometimes / some parts by
 operating system developers etc. If calling conventions don't match
 between different functions then trouble is ahead (for example: Microsoft
-Windows allows switching between `fastcall` and `stdcall`).
+Windows allows switching between `fastcall` and `stdcall` in their C API).
 * If functions are declared `static` and are thereby locally defined in a
-compilation unit then the compiler can perform more aggressive optimizations,
+compilation unit, then the compiler can perform more aggressive optimizations,
 because it knows of all callers and callees and can make assumptions that
 wouldn't be possible if a function is exported e.g. for use in a dynamically
 loaded library. This can for example allow to relax the requirements to backup
@@ -992,15 +1031,6 @@ stack pointer, return address, or function specific parameter values.
 completely different function or code portion and thus achieve completely new
 program behaviour.
 
-Working with Binary Snippets: The exit System Call
---------------------------------------------------
-
-* In this example we will learn how to extract a piece of machine code from a
-  binary and repurpose it.
-* For this example you will need need to install the `execstack` package to
-  successfully build it.
-* *Hands-on*: this is example folder `exit_snippet`.
-
 Example 1: Parameter Injection
 ------------------------------
 
@@ -1016,7 +1046,7 @@ Example 2: Replacing the Return Address
 
 [role="incremental"]
 * The previous example showed how to modify the parameters that existing code
-works with but the basic code flow remained unchanged.
+works with, but the basic code flow remained unchanged.
 * This time we want to change the code location that is returned to after the
 function call finishes.
 * *Hands-on*: See example folder `zombie_call`.
@@ -1038,7 +1068,7 @@ Trouble with Terminators
 cases?
 [role="incremental"]
 ** The problem is when any `'\0'` byte is included in the code or addresses
-that we want to execute then it is not copied completely over into the target
+that we want to execute, then it is not copied completely over into the target
 buffer.
 ** The same goes for `'\n'` for line based functions like `gets()`.
 ** Or any whitespace characters in case of `scanf("%s", ...)`.
@@ -1049,6 +1079,16 @@ any of the problematic bytes and look for equivalent command sequences
 that avoid having to put the bytes in question into the code sequence.
 * Example: replacing __mov $0 %rbx__ by __xorq %rbx %rbx__ avoids any null
 bytes but achieves the same result of getting the value of 0 into `%rbx`.
+
+Working with Binary Snippets: The exit System Call
+--------------------------------------------------
+
+* In this example we will learn how to extract a piece of machine code from a
+  binary and repurpose it.
+* For this example you will need need to install the `execstack` package to
+  successfully build it.
+* *Hands-on*: this is example folder `exit_snippet`.
+
 
 // hint that there have even been concepts like putting the C library into an
 // address space that always contained a null byte
@@ -1065,8 +1105,8 @@ Example 2: The execve System Call
 ---------------------------------
 
 [role="incremental"]
-* What an attacker typically wants to achieve with a stack buffer overflow exploit
-is starting some other program with the elevated privileges of the vulnerable program
+* What an attacker typically wants to achieve with a stack buffer overflow exploit,
+is to start some other program with the elevated privileges of the vulnerable program
 (think of __setuid__ binaries) or start a reverse shell that accepts additional
 commands from the network.
 * An important system call in this regard is `execve()`.
@@ -1154,7 +1194,7 @@ Stack Buffer Overread
 ---------------------
 
 [role="incremental"]
-* So far we've looked at the worst case of a stack buffer write overflow which
+* So far we've looked at the worst case of a stack buffer write overflow, which
 might allow an attacker to execute arbitrary code or gain privileges.
 * But what if there's a vulnerability that only allows to read content from
 the stack? Which types of vulnerabilities do you see here?
@@ -1174,7 +1214,7 @@ Undefined Data on the Stack
 
 [role="incremental"]
 * In C programming, when a variable is put on the stack and not immediately
-  initialized then it contains undefined data (i.e. it is usually not zero
+  initialized, then it contains undefined data (i.e. it is usually not zero
   initialized automatically).
 * What this means is that typically some seemingly random or garbage data, or,
   more accurately, data from former stack frames is found in the variables.
@@ -1188,8 +1228,8 @@ Not Leaving Sensitive Data Behind: A Difficult Task
 * Initialization of buffers and variables before using them is good practice
 and works well in most situations. This protects against accidental leakage of
 data from other parts of the program. For small data like integers this is
-also no big performance impact. For large buffers special care has to be
-taken if performance matters.
+also no big performance impact. For large buffers, special care has to be
+taken, if performance matters.
 * It would generally be desirable to wipe out any critical data like
 passwords, cryptographic keys, random data etc. right after it has been used.
 * In managed programming languages that use a garbage collector and smart
@@ -1212,13 +1252,14 @@ typically overwritten by other code (e.g. MMX, SSE extensions).
 swapped in and out of registers, leaving copies of data on the stack without
 our knowledge.
 * There's `memset_s()` in newer language standards starting from 'C11' and
-'C++11' (but in 'C11' it is optional). There's also `explicit_bzero()` (BSD) or
-`SecureZeroMemory()` (Microsoft Windows).
+  'C++11' (but in 'C11' it is optional). Starting with 'C23', `memset_explicit()`
+  has been added, which is no longer optional. There's also `explicit_bzero()`
+  (BSD) or `SecureZeroMemory()` (Microsoft Windows).
 * 'gcc' supports `-fno-builtin-memset` to avoid optimizing away the memset()
 function call, however this might hit performance for other code locations.
 * Generally we're in a fight here against the philosophy of the C programming
 language and the optimization routines of compilers. Even if we win for the
-moment we can't be sure if we don't lose next time. And this condition is
+moment, we can't be sure if we don't lose next time. And this condition is
 difficult to detect even in unit tests or alike.
 * Actually we'll be needing a kind of language extension for a clean approach.
 For today it needs to suffice that we're aware of these issues and do our best
@@ -1227,11 +1268,11 @@ to solve them.
 An Optimization Proof memset(): A Best Effort Approach
 ------------------------------------------------------
 
-For writing a `memset()` wrapper/replacement that is likely not to be
-optimized out we can take the following approach:
+For writing a backward compatible `memset()` wrapper/replacement that is
+likely not to be optimized out, we can take the following approach:
 
 [role="incremental"]
-* Put the function in an isolated compilation unit that is compiled without
+* Put the function into an isolated compilation unit that is compiled without
 optimizations (i.e. `-O0`).
 * The parameter pointing to the buffer to be zeroed should have the `volatile`
 qualifier.
@@ -1253,8 +1294,8 @@ Protection Mechanisms Against Stack Overflows: Coding
 === Most Important Protection: Safe Coding Practices
 
 [role="incremental"]
-* When there's no bad code then there's nothing to protect from in the first
-place. Thus we shouldn't rely on some magic protection helping us but on our
+* When there's no bad code, then there's nothing to protect from in the first
+place. Thus we shouldn't rely on some magic protection helping us, but on our
 own coding skills for getting security right.
 * The protection mechanisms are only a last resort when things already have
 gone downhill.
@@ -1271,7 +1312,7 @@ implement length restrictions.
 ** Encapsulate repetitive and complex memory management operations in abstract
    functions.
 ** When you really want to optimize e.g. by leaving larger buffers
-   uninitialized or by using dangerous functions then clearly document the
+   uninitialized or by using dangerous functions, then clearly document the
    purpose and the conditions surrounding it.
 * Use tools for detecting otherwise not easily visible issues. For example:
 [role="incremental"]
@@ -1279,8 +1320,9 @@ implement length restrictions.
    that might be more noise than value.
 ** Use `valgrind` to detect invalid memory read/write, undefined data usage,
 memory leaks (it is not perfect for stack issues though).
-** Test with builds compiled with `-fsanitize=address` which will add
-transparent routines to detect memory errors during runtime.
+** Test with builds compiled with `-fsanitize=address`, `-fsanitize=undefined`
+   and related sanitizers, which will add transparent routines to detect memory
+   errors during runtime.
 ** Use 'American Fuzzy Lop', a fuzzing tool to feed automatically generated
 data into your software.
 * Integrate such tools into continuous integration test suites, unit test
@@ -1290,7 +1332,7 @@ Protection Mechanisms Against Stack Overflows: Many Eyes for Review
 -------------------------------------------------------------------
 
 When you're working on a sensitive code portion or writing a lot of new
-interfacing code then you should have somebody reviewing that code.
+interfacing code, then you should have somebody reviewing that code.
 
 Protection Mechanisms Against Stack Overflows: Know your C library functions
 ----------------------------------------------------------------------------
@@ -1300,7 +1342,7 @@ Protection Mechanisms Against Stack Overflows: Know your C library functions
 C library and other library/framework functions.
 * If you're unsure, read again. Even experienced programmers need to check up
 on basics sometimes.
-* When you're implementing buffer handling functions yourself then please
+* When you're implementing buffer handling functions yourself, then please
 carefully document them so others (and yourself) can know what to expect of
 them. Try to model them after well known (and safe) behaviour from standard
 functions.
@@ -1319,7 +1361,7 @@ buffer. For example `strncpy(path, PATH_MAX, src)` will actually write nearly
 Protection Mechanisms Against Stack Overflows: Choice of Language
 -----------------------------------------------------------------
 
-If performance and low level system programming are not major requirements
+If performance and low level system programming are not major requirements,
 then you're better off using a safer programming language like `python`,
 `ruby`, `rust` or `go`:
 [role="incremental"]
@@ -1337,9 +1379,9 @@ My personal opinion: Try to avoid C programming for userspace programs:
 
 [role="incremental"]
 * Memory and string handling simply is a *pain* in plain C.
-* Attempts to simplify it like in 'glib' tend to result in inefficiencies,
-because strings are copied much (`strdup()`) to avoid having to deal
-with ownership.
+* Attempts to simplify it, like in 'glib', tend to result in inefficiencies,
+  because strings are copied much (`strdup()`) to avoid having to deal
+  with ownership.
 * C++ makes string handling already way easier and memory management more
 automatic by using constructors/destructors and reference counting using
 `shared_ptr` and alike.
@@ -1359,10 +1401,10 @@ The Rust programming language is currently very popular:
 
 [role="incremental"]
 * it has security "built-in", because there are practically no ways to break
-  memory management, except if explicitly desired by use of so called unsafe
-  functions.
+  memory management, except if explicitly desired by use of so called
+  'unsafe' functions.
 * it makes error handling more or less mandatory.
-* it is a compiled, mostly static programming language so it can also generate
+* it is a compiled, mostly static programming language, thus it can also generate
   highly optimized code comparable to C.
 
 [role="incremental"]
@@ -1373,12 +1415,13 @@ It also has some downsides in my opinion:
   memory model is rather hard to grasp at first - if you're used to other
   languages.
 * it uses only static linking and can result in really fat binaries that have
-  tons of third party package code in its belly.
+  tons of third party package code in its belly (executables ranging in the
+  size of 50 to 200 MiB are no rarity here).
 * the native dependency handling (also in Go and some other new languages)
-  ease and standardize the development, but this also brings new risks: Each
+  eases and standardizes the development, but this also brings new risks: Each
   dependency can also be a maintenance burden, and suddenly the responsibility
   for using safe third party libraries lies in the hands of countless
-  developers instead of in the hands of distributors that specialize on this.
+  developers instead of in the hands of distributors, that are specialized in this.
 
 Protection Mechanisms Against Stack Overflows: ASLR
 ---------------------------------------------------
@@ -1411,7 +1454,7 @@ pointers set during runtime.
 
 It is called 'position independent code', because it doesn't matter where in
 address space the code is placed, it will still work when run (just like our
-`execve` code snippet, incidentally).
+`execve` code snippet happens to be).
 
 [role="incremental"]
 * For fully taking advantage of ASLR, library code needs to be compiled
@@ -1420,7 +1463,7 @@ linked with `-pie`. Object files compiled with `-fpie` can only be used for
 linking executables, not libraries any more.
 * *Beware*: If some object files are not compiled the right way, then the
 resulting binary might silently not utilize ASLR for the code segment.
-* If a binary is not fully position-independent then only parts or none of the
+* If a binary is not fully position-independent, then only parts or none of the
 memory segments are loaded at random addresses.
 * There is a tool named 'hardening-check' that helps to check hardening
 properties of ELF Linux binaries. Run it against an executable and check for
@@ -1429,10 +1472,11 @@ fully support ASLR.
 * You can see ASLR in action by running for example `bash -c 'cat
 /proc/$$/maps'`. You can see the addresses of various segments changing for
 each run, or not, depending on which parts are using ASLR.
-* In SUSE distributions we've enabled PIE executables by default now in
-Tumbleweed and LEAP-15/SLE-15. Before that only those packages that explicitly
-added correct compiler and linker flags have created PIE executables. There's
-also an rpmlint warning now when your package ships non-PIE executables.
+* In SUSE distributions we've enabled PIE executables by default since
+  LEAP-15/SLE-15. Before that, only those packages that explicitly
+  added correct compiler and linker flags have created PIE executables. There's
+  also an rpmlint warning when your package ships non-PIE executables, and
+  the security team made efforts to hunt down remaining non-PIE packages.
 * Some newer programming environments like Golang make it more difficult to
   generate PIE binaries by default, because of their special (and still
   somewhat evolving) linking model.
@@ -1450,7 +1494,7 @@ Potential issues with ASLR. Which problems do you see?
 * Some architectures like 'x86_64' provide special instructions or registers
   that make implementing position independent code easy and no performance
   penalty.
-* On machines with 32-Bit address spaces like 'i386' the available limited
+* On machines with 32-Bit address spaces like 'i386', the available limited
   address space can make 'guessing' the right addresses easier, while on 64-Bit
   architectures a very large amount of possible segment locations makes ASLR way
   stronger.
@@ -1458,18 +1502,20 @@ Potential issues with ASLR. Which problems do you see?
   assembly code, for example. This software would break (or not compile) when
   running with ASLR.
 * Leaking addresses of objects in memory into log files or via information
-  leaks like stack overread can give attackers valuable information to counter
-  ASLR. The combination of an information leak and a stack overflow would thus
-  enable code execution again.
+  leaks like stack overread or use of unitialized data can give attackers
+  valuable information to counter ASLR. The combination of an information leak
+  and a stack overflow would thus enable code execution again.
 * An attacker should not get the possibility to test many different return
   addresses against a vulnerable program. Thus programs should not restart
-  indefinitely after crashing but employ some grace period before restarting
+  indefinitely after crashing, but employ some grace period before restarting
   again. The grsecurity kernel patches offer such a feature on kernel level
   (blocks program start for even a whole minute after it crashed unexpectedly).
 * In the past some weaknesses of Linux's ASLR implementation have been
   discussed, e.g. https://www.openwall.com/lists/oss-security/2018/02/27/5.
   There it was outlined that the randomness of the mappings was not really
   *that* random.
+* And even more recently major weaknesses in mapping the C library have been
+  noticed: https://zolutal.github.io/aslrnt.
 
 Protection Mechanisms Against Stack Overflows: ASLR IV
 ------------------------------------------------------
@@ -1553,7 +1599,7 @@ also conflicts with some of these settings.
 Protection Mechanisms Against Stack Overflows: NX Bit for Stack and Heap III
 ----------------------------------------------------------------------------
 
-The memory protection relies on the hardware support. If it is not available
+The memory protection relies on the hardware support. If it is not available,
 then we can't make use of it. This especially affects 32-Bit Linux on 'i386'
 machines:
 
@@ -1583,30 +1629,30 @@ stack.
 
 === So what do we need a canary for?
 [role="incremental"]
-https://share.america.gov/english-idiom-canary-coal-mine[Explanation for the idiom]
+https://substackcdn.com/image/fetch/w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F233c3466-9c3c-46d3-b047-9248ef6c8221_1142x507.jpeg[Explanation for the idiom]
 
-[role="incremental"]
-=== How it Works
-
-// disassembly of a stack protected function shows some lines at the end that
+// show disassembly of a stack protected function, show some lines at the end that
 // just do the expected thing. It's using thread local storage and the %fs
 // segment register, however.
 // there seems to be no way of reading this register in gdb.
 
+=== How it Works
+
+[role="incremental"]
 * The compiler generates extra code that puts a canary value at predefined
 locations within a stack frame.
 * There are different approaches how the canary value is exactly computed.
-* Before returning from a function call some extra check code runs, that tests
-whether the canary value is still the expected one, if not then the execution
+* Before returning from a function call, some extra check code runs, that tests
+whether the canary value is still the expected one, if not, then the execution
 of the program is aborted.
-* How does this help prevent security issues?
+* How does this help to prevent security issues?
 [role="incremental"]
 ** Since the stack buffer overflow almost always relies on some valid target
 address on the stack being overflown, the exploit always needs to write *some*
 data linearly on the stack until it finally reaches the return address.
 ** Thus it is bound to overwrite the canary value setup by the compiler.
 ** The only way around it would be for the exploit to know the correct canary
-value to overflow with, which is normally very hard or countered by the
+value to overflow with, which is normally very hard, or countered by the
 canary value containing typical terminator characters like '\0', '\n', '\r',
 or being based on random values chosen during program initialization.
 
@@ -1614,7 +1660,7 @@ Protection Mechanisms Against Stack Overflows: Stack Canary Values II
 ---------------------------------------------------------------------
 
 [role="incremental"]
-* To enable stack canary values pass one of the following switches to GCC:
+* To enable stack canary values, pass one of the following switches to GCC:
 [role="incremental"]
 ** `-fstack-protector` which will enable the extra code only for
 functions that put susceptible buffers on the stack (buffers larger than 8
@@ -1704,9 +1750,10 @@ inconsistencies.
 * Calls to standard functions like `memcpy, mempcpy, memmove, memset, strcpy,
 stpcpy, strncpy, strcat, strncat, sprintf, vsprintf, snprintf, vsnprintf` and
 `gets` will receive additional security checks as far as this is possible.
-* Because often statically sized buffers placed on the stack are used, the
-  compiler can even check an unsafe call to strcpy() whether it overflows the
-  target buffer.
+* Because often statically sized buffers are placed on the stack, the
+  compiler can check unsafe calls to functions like `strcpy()` during runtime,
+  to detect, whether it might overflow the target buffer, and abort in such
+  cases.
 * This comes at little cost and should be enabled in all cases.
 * Use `hardening-check` on executables or libraries to check for enabled
 fortify source functionality.
@@ -1734,7 +1781,7 @@ without requiring knowledge about addresses, overwriting a canary value or
 changing the return address. Variations of the 'param_injection' example can
 still work even when all protection is in place.
 ** When internal program state information is leaked via logging, debugging or
-separate security issues in a program then parts of the security mechanisms
+separate security issues in a program, then parts of the security mechanisms
 may be compromised (see also <<stack-overread,Stack Buffer Overread>>).
 
 Remaining Concerns: Return Oriented Programming
@@ -1764,7 +1811,7 @@ segment) and stack memory areas start to overlap.
 down and the heap starts on a lower memory range in address space and grows
 up, there is the possibility that both meet each other when large amounts of
 memory are allocated.
-* The Linux kernel added a so called stack guard page that is supposed to
+* The Linux kernel adds what is called a stack guard page, that is supposed to
 detect this situation and abort program execution, when a write to it occurs.
 * There have still been possibilities to get past this page when large
 uninitialized buffers have been placed on the stack, that didn't cause writes.
@@ -1780,14 +1827,14 @@ Remaining Concerns: The Stack Clash III
 [role="incremental"]
 * The stack clash works way easier on 'i386', because the address space is much
 smaller there and closing the gap between memory segments is feasible.
-* To increase the size of heap and stack different caller controllable
+* To increase the size of heap and stack, different caller controllable
 mechanisms can be employed:
 [role="incremental"]
 ** environment variables and command line arguments which will be placed in
 the stack segment.
 ** memory leaks in the program that cause the heap to grow.
-* Once two memory regions overlap each other a way needs to be found to either
-influence the content found on the stack or the content found on the heap to
+* Once two memory regions overlap each other, a way needs to be found to either
+influence the content found on the stack, or the content found on the heap, to
 influence the execution of the program. This is specific to the attacked
 program and the used approach.
 * The 'exim' exploit published by Qualys uses the fact that a command line
@@ -1809,11 +1856,11 @@ So how is this clash fixed? The current fix is multi-fold:
 [role="incremental"]
 * The stack guard area size has been increased to a larger size and should
 also be configurable for administrators to tune it.
-* The limits on heap/stack/environment size should be enforced correctly which
-was not completely the case.
+* The limits on heap/stack/environment size should be enforced correctly, which
+was not completely the case before.
 * A heap memory leak issue in 'glibc' has been fixed that facilitated the
 stack clash.
-* Compiling programs with '-fstack-check' is supposed to help but 'gcc' was not
+* Compiling programs with '-fstack-check' is supposed to help, but 'gcc' was not
 correctly implementing this at the time, so it was only a partial fix.
 
 What about the Heap?
@@ -1830,7 +1877,7 @@ using the `sbrk()` and `brk()` system calls.
 a large amount of differently sized objects that will be allocated and freed
 in seemingly random patterns.
 ** Equally sized chunks are kept in pools or lists and are chained by keeping
-next/prev points in front or back of the chunks.
+next/prev pointers in front or back of the chunks.
 * Heap issues are generally more difficult to exploit, because the heap is not
 part of the regular execution flow in a program.
 
@@ -1838,7 +1885,7 @@ Heap Buffer Overflows
 ---------------------
 
 [role="incremental"]
-* If the allocator keeps management data at the end of a heap chunk then we
+* If the allocator keeps management data at the end of a heap chunk, then we
 may be able to overwrite this data in a way that causes interesting things to
 happen during `free()` time (triggering arbitrary memory writes is an aim
 here).
@@ -1847,10 +1894,10 @@ here).
 ** We could manipulate management data of the next heap chunk, in case the
 allocator keeps this data at the front of each chunk.
 ** Otherwise we can manipulate some application specific data.
-* If we can overflow into a member of a struct kept on the heap then we might
+* If we can overflow into a member of a struct kept on the heap, then we might
 be able to influence other data in the struct to our advantage.
 * The heap allocator's algorithm will differ between 'glibc' versions,
-memory management wrappers and programming languages so the exploits cannot be
+memory management wrappers and programming languages, so the exploits cannot be
 as generic as with stack buffer overflows.
 * On the "plus" side there are less protection mechanisms that apply to heap
 buffer overflows.
@@ -1876,7 +1923,7 @@ Some other part of the program now points to that data, assuming some pointers
 or other application specific data still lives there. By manipulating the
 "harmless" description text the attacker now also controls completely
 unrelated data.
-* By skillfully constructing the data in the heap buffer it might
+* By skillfully constructing the data in the heap buffer, it might
 be possible to cause unintended program behaviour or even arbitrary code
 execution. Each case is individual to the vulnerable application though.
 
@@ -1900,7 +1947,7 @@ exploiting heap buffer overflow vulnerabilities.
 hit injected data or code. An extended technique is known as 'heap spraying'
 where the same data is placed on the heap a lot of times to increase the
 amount of valid addresses e.g. for executing code.
-* In combination with information leaks can then help determining the correct
+* In combination with information leaks, this can then help determining the correct
 address for manipulations to work.
 
 Heap Protection Mechanisms
@@ -1915,10 +1962,10 @@ space, too.
 ** NX bit also applies to the heap, so executing it directly should be
 prevented, although there are other techniques like changing the PLT
 (Procedure Lookup Table) of the program.
-* These are measures that could be taken but depend on the allocator:
+* These are measures that could be taken, that depend on the allocator, though:
 [role="incremental"]
-** An allocator could attempt not to return recently used chunks again so soon
-but that would be another burden on the allocator algorithm.
+** An allocator could attempt not to return recently used chunks again so
+soon, but that would be another burden on the allocator algorithm.
 // TODO: check current malloc()/free()
 ** There are no general heap canary values as far as I know, although it would
 be generally possible to introduce them. There are some additional security
@@ -1951,8 +1998,8 @@ parts of this training have been based on:
 * Wikipedia article regarding return oriented programming:
 ** https://en.wikipedia.org/wiki/Return-oriented_programming
 * An open book offering an introduction to x86 32-Bit assembler programming.
-If you want to dive into assembler a bit more this is a good way to go. Parts
-of the book are for beginners in programming in general, but the assembler
-part is good to understand. For x86_64 assembler you'll need to adjust the
-concepts:
+If you want to dive into assembler a bit more, then this is a good way to go.
+Parts of the book are for beginners in programming in general, but the
+assembler part is good to understand. For x86_64 assembler you'll need to
+adjust the concepts:
 ** 'Programming from the Ground Up': https://savannah.nongnu.org/projects/pgubook/
