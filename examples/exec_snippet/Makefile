@@ -4,7 +4,6 @@ all: $(BINS)
 
 exec_asm: exec_asm.c
 	gcc -g $< -o $@
-	execstack -s $@ || rm $@
 
 exec_bin: exec_bin.c
 	gcc -g $< -o $@
