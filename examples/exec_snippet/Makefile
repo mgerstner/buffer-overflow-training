@@ -2,7 +2,7 @@ BINS=exec_asm exec_bin
 EXTRA_BINS=exec_asm_mprotect
 all: $(BINS)
 
-exec_asm: exec_asm.c
+exec_asm: exec_asm.c simple.S
 	gcc -g $< -o $@
 
 exec_bin: exec_bin.c
