@@ -33,7 +33,7 @@
 #	include <sys/mman.h>
 #	include <stdint.h>
 
-static void make_test_writable(void *mainptr) {
+static void make_text_writable(void *mainptr) {
 	// mark main() code writable during runtime, an alternative to linking
 	// with -Wl-N and statically
 	intptr_t addr = (intptr_t)mainptr;
@@ -47,7 +47,7 @@ static void make_test_writable(void *mainptr) {
 
 int main() {
 #ifdef USE_MPROTECT
-	make_test_writable(&main);
+	make_text_writable(&main);
 #endif
 
 	/*
