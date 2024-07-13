@@ -26,7 +26,7 @@ aspects:
 - libsoup ships an example http server called _simple-httpd_. By compiling it
   we have a suitable program to test an attack against.
 - The upstream repo is at https://github.com/GNOME/libsoup.git. Version tag
-  `2.58.1` is the most recents version that contains the vulnerability.
+  `2.58.1` is the most recent version that contains the vulnerability.
 - To trigger the issue you can use the accompanying script `hit-the-soup.py`.
   It basically creates an HTTP header that enables chunked encoding first and
   the next line of text can already overflow the target buffer.
