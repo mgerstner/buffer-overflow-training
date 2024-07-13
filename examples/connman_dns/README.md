@@ -95,8 +95,8 @@ Running connman
 ===============
 
 We don't want to run connman as root, especially not this vulnerable version.
-By default connman attempts to reconfigure each ethernet interface using DHCP.
-That would mess up our the system. connman is pretty stubborn in its
+By default connman attempts to reconfigure each Ethernet interface using DHCP.
+That would mess up our system. Connman is pretty stubborn in its
 prerequisites. It is not able to run without network administration privileges
 or without D-Bus communication. To overcome this, a helper script
 `enter_namespace.py` is part of this exercise. This script will employ
@@ -121,8 +121,8 @@ device like this:
     [...]
     (network-ns) $ ip link add fake0 type dummy
 
-This will give us a dummy ethernet device named "fake0". It is connected to
-nothing, but _connmand_ can use it as any other ethernet device, send out DHCP
+This will give us a dummy Ethernet device named "fake0". It is connected to
+nothing, but _connmand_ can use it as any other Ethernet device, send out DHCP
 requests and configure IP addresses on it.
 
 With this prepared we can now launch _connmand_ itself:
@@ -149,7 +149,7 @@ Since the security issue is in the DNS reverse proxy code of _connmand_ and
 can only be triggered from the remote DNS server side, we need to be able to
 act as a remote DNS server locally. Connman's DNS reverse proxy listens on
 localhost:53 and forwards DNS requests to whatever DNS server is configured.
-We therefore use the "fake0" ethernet device to have a "remote" DNS server
+We therefore use the "fake0" Ethernet device to have a "remote" DNS server
 listening on it.
 
 Configure the "fake0" connection using connmanctl like this (you need to
@@ -196,7 +196,7 @@ use a fourth shell:
 
 This command explicitly contacts the DNS server running on localhost (the DNS
 reverse proxy implemented in _connmand_) and asks it to resolve the hostname
-"somwhere.". The dot suffix is important, because it triggers the DNS reverse
+"somewhere.". The dot suffix is important, because it triggers the DNS reverse
 proxy's domain name qualification logic that contains the security issue. As
 we can see from the output, the setup has worked and the reply with IPv4
 address 255.255.255.255 from the `connexec.py` script has reached our DNS
