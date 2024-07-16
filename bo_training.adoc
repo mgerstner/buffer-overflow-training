@@ -783,7 +783,7 @@ Following are the conventions for system call parameter passing on Linux on
 |====================================================
 
 The system call numbers differ between 'i386' and 'x86_64' and can be found in
-'/usr/include/asm-x86/unistd_{32,64}.h'.
+'/usr/include/asm/unistd_{32,64}.h'.
 
 Assembler: The User Space and Kernel Space Side System Call Handling
 --------------------------------------------------------------------
