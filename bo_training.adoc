@@ -1189,6 +1189,16 @@ found in Gnome's 'libsoup', an http protocol parsing library, some years ago.
 * *Hands-on*: In the example folder `doc2exploit` further instructions and
   helpers can be found.
 
+[role="incremental"]
+=== sngrep (2024)
+
+* `sngrep` is a textual SIP VoIP call monitoring tool.
+* It is an example of badly implemented parsing of untrusted network data.
+* It is at the same time a good example of unexpected obstacles to exploiting
+  stack buffer overflows.
+* *Hands-on*: In the example folder `phone2overflow` further instructions and
+  helpers can be found.
+
 [[stack-overread]]
 Stack Buffer Overread
 ---------------------

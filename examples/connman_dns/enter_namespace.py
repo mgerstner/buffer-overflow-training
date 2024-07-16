@@ -15,8 +15,23 @@ def eprint(*args, **kwargs):
     print(*args, **kwargs)
 
 
-parser = argparse.ArgumentParser(description="Manages execution of a split-off network namespace for safely running connmand and exploiting it.")
-parser.add_argument("--reexec", action='store_true')
+example_root = Path(__file__).parent
+need_preload_lib = (example_root / "geteuid-preload").exists()
+
+CONFIG = {
+    "connman_dns": ("connmand", "sbin/connmand"),
+    "phone2overflow": ("sngrep", "usr/local/bin/sngrep")
+}
+
+config = CONFIG.get(example_root.name)
+if not config:
+    eprint("unsupport exploit example", example_root.name, "encountered!")
+    sys.exit(1)
+exploit_target = config[0]
+exploit_subpath = config[1]
+
+parser = argparse.ArgumentParser(description=f"Manages execution of a split-off network namespace for safely running {exploit_target} and exploiting it.")
+parser.add_argument("--reexec", action='store_true', help='internal switch used to transparently join an existing namespace')
 parser.add_argument("--join", action='store_true')
 
 args = parser.parse_args()
@@ -26,25 +41,25 @@ script_dir = this_script.parent
 # Running D-Bus in a separate user namespace doesn't work out, because the
 # user ID doesn't match the user ID in the root namespace. Lie to D-Bus about
 # our real and effective user IDs using an ld-preload library.
-preload = script_dir / "geteuid-preload/libgeteuid_preload.so"
+preload_lib = script_dir / "geteuid-preload/libgeteuid_preload.so"
 instdir_conf = script_dir / "instdir.conf"
 
 if not instdir_conf.exists():
-    eprint(f"Expected location of connmand $INSTDIR in {str(instdir_conf)}")
+    eprint(f"Expected location of {exploit_target} $INSTDIR in {str(instdir_conf)}")
     sys.exit(1)
 
 instdir = Path(open(instdir_conf).read().strip())
-connmand = instdir / "sbin/connmand"
+exploit_bin = instdir / exploit_subpath
 
-if not instdir.is_dir() or not connmand.exists():
-    eprint(f"{instdir} or {connmand} do not exist")
+if not instdir.is_dir() or not exploit_bin.exists():
+    eprint(f"{instdir} or {exploit_bin} do not exist")
     sys.exit(1)
 
 # export it into the environment to make example command lines from the
 # README.md work as expected
 os.environ["INSTDIR"] = str(instdir)
 
-if not preload.exists():
+if need_preload_lib and not preload_lib.exists():
     print("Building LD_PRELOAD helper lib\n")
     subprocess.check_call(["make"], cwd=script_dir)
     print()
@@ -54,10 +69,15 @@ ns_pidfile = instdir / "var" / "netns.pid"
 if args.reexec:
     child_env = os.environ.copy()
     child_env["IN_NS_NAMESPACE"] = "1"
-    child_env["LD_PRELOAD"] = str(preload)
+    if need_preload_lib:
+        child_env["LD_PRELOAD"] = str(preload_lib)
     shell = os.environ["SHELL"]
     child_env["PS1"] = r"(network-ns) \u@\h:\w> "
     if not args.join:
+        try:
+            os.makedirs(ns_pidfile.parent)
+        except FileExistsError:
+            pass
         with open(ns_pidfile, 'w') as ns_fd:
             ns_fd.write(str(os.getpid()))
         # we need to mount our forked-off sysfs to reflect our network
