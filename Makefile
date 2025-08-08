@@ -19,4 +19,4 @@ clean:
 	rm bo_training.html
 
 show: bo_training.html
-	xdg-open bo_training.html
+	xdg-open bo_training.html 2>/dev/null
