@@ -1,7 +1,7 @@
 Returning to a Different Function than Intended
 ===============================================
 
-This program also contains a typical buffer overflow vulnerability like the
+This program contains a typical buffer overflow vulnerability, like the
 previous example did. This time we want to replace the return address such
 that the function `zombie()` is called upon return.
 

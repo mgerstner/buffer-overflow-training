@@ -53,10 +53,10 @@ loop_start:
 
 	# loop handling
 	dec	%rax		# decrement the loop counter
-	jnz	loop_start	# jump-not-zero: perform another loop operation
+	jnz	loop_start	# jump-not-zero: perform another loop iteration
 				# if the counter hasn't hit zero yet.
 
-				# the dec instruction stores a flag that
+				# the dec instruction sets a CPU flag that
 				# indicates zero/non-zero result
 
 	# exit(0)

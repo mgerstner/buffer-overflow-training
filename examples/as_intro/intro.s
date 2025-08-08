@@ -14,15 +14,15 @@ loop_start:
 
 	# loop handling
 	dec	%rbx		# decrement the loop counter
-	jnz	loop_start	# jump-not-zero: perform another loop operation
+	jnz	loop_start	# jump-not-zero: perform another loop iteration
 				# if the counter hasn't hit zero yet.
 
-				# the dec instruction stores a flag that
-				# indicates zero/non-zero result
+				# the dec instruction sets a flag in the CPU
+				# which indicates zero/non-zero result
 
 	# exit(0)
 	mov	$60, %rax	# system call 60 is exit
-	xor	%rdi, %rdi	# we want return code 0, this is a cheap instruction to generate a 0 in register rdi
+	xor	%rdi, %rdi	# we want return code 0, this is a cheap instruction to generate zero in register rdi
 	syscall			# invoke operating system to exit
 message:
 	# this declares a program constant, ASCII text in this case

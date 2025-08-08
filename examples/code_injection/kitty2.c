@@ -17,7 +17,7 @@ void cat(FILE *input) {
 	char text[256];
 	int res;
 
-	printf("[address of text buffer: %p]\n", text);
+	fprintf(stderr, "[address of text buffer: %p]\n", text);
 
 	while (1) {
 		// read a complete line into the text buffer

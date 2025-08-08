@@ -7,30 +7,30 @@ Prerequisites
 ### Installing `debuginfo` Packages
 
 You will need to install debugging symbols for the `glibc`. It may be
-necessary to enable `Debug` and `Sources` repositories in zypper before this
-works. See `zypper lr -d`. When the repositories are available the required
+necessary to enable `Debug` and `Sources` repositories in `zypper` before this
+works. See `zypper lr -d`. When the repositories are available, the required
 packages can be installed as *root* (or via `sudo`) like this:
 
     root# zypper in glibc-debuginfo
 
 ### Using `debuginfod` Instead
 
-NOTE: this feature is currently broken, because the debuginfo servers are
-unavailable.
-
 Alternatively, if on openSUSE Tumbleweed, you can use the `debuginfod` feature
 which will allow you to transparently download debug symbols for system
-packages. In this case you should make the use of this feature permanent by
+packages. In this case you should mark the use of this feature permanent by
 adding
 
     set debuginfod enabled on
 
-to your ~/.config/gdb/gdbinit, which might first need to be created.
+to your `~/.config/gdb/gdbinit`, which might first need to be created.
+Similarly, if you don't want to use this feature, you can permanently
+configure it as `off` to avoid `gdb` asking you whether to contact network
+servers all the time.
 
 Compile and Run the Program
 ---------------------------
 
-A gdbtest program exists in this directory that can be built using `make`.
+A `gdbtest` program exists in this directory that can be built using `make`.
 Look at the C program, understand what it does and observe its behaviour.
 
     $ make
@@ -62,9 +62,9 @@ In all cases you will enter the `gdb` shell shown by the prompt `(gdb)`. The
 `gdb` shell accepts a lot of different commands. We will learn some of the
 basic ones during this training.
 
-By typing `start` the program will start but stop right away in the `main()`
+By typing `start` the program will start, but stop right away in the `main()`
 function. If all went well then you should be able to see the first source
-line in the `main()` function and be able to inspect the running program.
+line in the `main()` function and to inspect the running program.
 
 NOTE: In recent openSUSE Tumbleweed installations attaching even to your own
 processes is not allowed by default anymore, for reasons of security
@@ -88,7 +88,7 @@ Running a System Program in `gdb`
 Let's try to debug the `ls` program.
 
 When using the debuginfo package then we first we need to find out which
-package it is belonging to:
+package it belongs to:
 
     $ rpm -qf /usr/bin/ls
     coreutils-8.31-2.1.x86_64
@@ -102,6 +102,7 @@ Look at the contents of these packages to better understand their structure:
     $ rpm -ql coreutils-debuginfo
     [...]
     $ rpm -ql coreutils-debugsource
+    [...]
 
 After doing this you should be able to successfully debug the `ls` command.
 For example:

@@ -13,15 +13,14 @@
 /*
  *  This program modifies the .text segment (i.e. the code modifies itself)
  *  which is not allowed by default.
+ *  In this case this happens only for demonstration purposes, to test the
+ *  assembler code, so bypassing this restriction is not really relevant for
+ *  the security exploit in practice.
  *
- *  This happens only for demonstration purposes to test the assembler code so
- *  bypassing this restriction is not really relevant for the security exploit
- *  in practice.
+ *  To get this code to work for testing, we can modify the page protection
+ *  during runtime with mprotect(), or link with writable text segments.
  *
- *  To get this code to work for testing we can modify the page protection
- *  during runtime with mprotect() or link with writable text segments.
- *
- *  The ld option -N recently started producing a linker error with
+ *  The `ld` linker option -N recently started producing a linker error with
  *  __ehdr_start being undefined. It seems to have to do with the GOT/PLT
  *  table being generated and requiring dynamic linking. Therefore we use the
  *  mprotect approach now.

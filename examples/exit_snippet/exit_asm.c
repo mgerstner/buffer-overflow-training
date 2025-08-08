@@ -17,13 +17,13 @@
  * (gdb) dump memory out.bin main+X main+Y
  * ```
  *
- * the resulting file can be formatted using 'xxd -i' to obtain a suitable C
- * string literal for further usage.
+ * the resulting file can be converted into a C literal string via 'xxd -i',
+ * which makes it easy to embed the binary data into a C program.
  */
 
 int main() {
 	// For completeness this exit system call uses the 32-bit
-	// i686 calling convention for Linux.
+	// i386 calling convention for Linux.
 	// This only works for register values <= 32 bit, higher bits will be
 	// zeroed out. This approach will also be slower than the AMD64
 	// syscall instruction (when running on x86_64 hardware, of course).

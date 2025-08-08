@@ -31,7 +31,13 @@ void runprog() {
 	// this is just a little help for exploiting this program
 	printf("[selection ptr is at %p]\n", selection);
 
-	printf("enter program index > ");
+	printf("Allowed programs:\n\n");
+	for (int i = 0; i < sizeof(ALLOWED_PROGS) / sizeof(ALLOWED_PROGS[0]); i++) {
+		printf("%d: %s\n", i, ALLOWED_PROGS[i]);
+	}
+	printf("default program is: %s\n", default_prog);
+
+	printf("\nenter program index to run > ");
 	fflush(stdout);
 
 	scanf("%s", selection);

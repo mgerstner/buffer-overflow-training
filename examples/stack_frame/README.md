@@ -21,7 +21,7 @@ $ gdb ./stack_frame
 ```
 
 Make sure no optimization is applied by the compiler and that debug symbols
-are added (which the Makefile should care for), otherwise assembler output
+are added (which the Makefile takes care of), otherwise assembler output
 will look very differently.
 
 A variation to the above is the `gdb` command `disassemble /s main` which

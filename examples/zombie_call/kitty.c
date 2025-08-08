@@ -19,7 +19,7 @@ void cat() {
 	int i;
 
 	// puts a well defined pattern into the text buffer
-	for (i = 0; i < 32; i++) {
+	for (i = 0; i < sizeof(text); i++) {
 		text[i] = i;
 	}
 

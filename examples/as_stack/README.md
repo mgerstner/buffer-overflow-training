@@ -5,7 +5,7 @@ This assembler program is based on the `intro_as` example. The program is
 still printing "Hello, world\n" in a loop. But this time the actual print
 handling logic has been moved into a reusable function called `print()`.
 
-To implement this `print()` function the stack frame needs to be established
+To implement this `print()` function, the stack frame needs to be established
 accordingly. Therefore this example allows us to learn how the stack is
 typically used.
 
