@@ -1158,8 +1158,8 @@ Setting Arbitrary Code Execution into Motion
 code in a vulnerable program.
 * *Hands-on*: This is example folder `code_injection`.
 
-Real-Life Examples
-------------------
+Real-Life Examples (I)
+----------------------
 
 We will look into one or two of the following real world vulnerabilities:
 
@@ -1180,6 +1180,9 @@ found in Gnome's 'libsoup', an http protocol parsing library, some years ago.
   helper script and documentation about a real-life stack overflow example
   that was found in the 'doom' OSS port.
 
+Real-Life Examples (II)
+-----------------------
+
 [role="incremental"]
 === connman (2021)
 
@@ -1199,6 +1202,9 @@ found in Gnome's 'libsoup', an http protocol parsing library, some years ago.
 * *Hands-on*: In the example folder `doc2exploit` further instructions and
   helpers can be found.
 
+Real-Life Examples (III)
+------------------------
+
 [role="incremental"]
 === sngrep (2024)
 
@@ -1208,6 +1214,28 @@ found in Gnome's 'libsoup', an http protocol parsing library, some years ago.
   stack buffer overflows.
 * *Hands-on*: In the example folder `phone2overflow` further instructions and
   helpers can be found.
+
+Real-Life Examples (IV)
+-----------------------
+
+[role="incremental"]
+=== Findings in 2025
+
+* This year I couldn't find a current, exploitable, striking yet simple
+  example of a stack buffer overflow vulnerability in FOSS software. Here is a
+  list of some interesting case studies, however:
+[role="incremental"]
+** net-tools (CVE-2025-46836): When `ifconfig` parses `/prov/net/dev`, a
+   buffer of `IFNAMSIZ` bytes can be overflown. There is only a pretty limited
+   attack vector, however. Find more details in example folder
+   `net_tools_ifconfig`.
+** editorconfig-core-c (CVE-2024-53849): stack buffer overflow in `ec_glob()`.
+   This is a rather interesting case, that is not fully exploitable in the
+   end. It still teaches a lot about how convoluted code leads to buffer overflows.
+   Find more details in example folder `editorconfig`.
+** gimp `ani_load_image()` (CVE-2025-48796): A nearly too trivial stack buffer
+   overflow, where the reporter already delivers a working exploit payload.
+   Find more details in example folder `gimp_load_exploit`.
 
 [[stack-overread]]
 Stack Buffer Overread
