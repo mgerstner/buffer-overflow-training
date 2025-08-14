@@ -1844,6 +1844,13 @@ exploit.
 * This is an advanced exploit technique, but is has been shown that it can be
 "turing complete" i.e. the bits of code found in typical executables can be
 used to derive a fully functional programming environment.
+* Recent Intel CPUs support a feature called "indirect branch tracking" that
+can help to protect against such types of attacks. It prevents the
+control flow from being manipulated, by only allowing to jump to code that
+contains an explicit `endbr` or `endbr64` instruction. Jumping into the
+middle of random code portions will cause a processor fault and program
+execution will not continue. See also https://lwn.net/Articles/889475[this LWN
+article] on how this feature is implemented in the Linux kernel.
 
 Remaining Concerns: The Stack Clash
 -----------------------------------
