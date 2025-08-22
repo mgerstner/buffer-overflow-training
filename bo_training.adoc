@@ -1923,7 +1923,7 @@ What about the Heap?
 
 [role="incremental"]
 * So far we've concentrated on exploiting stack based issues.
-* What are the security issues with heap buffer overflows?
+* Now we will take a look at security issues related to heap buffer overflows.
 * We will only take a cursory look on the heap, as it would justify a
   dedicated training due to its complexity.
 * How is the heap managed?
@@ -1940,8 +1940,8 @@ in seemingly random patterns.
   the heap is not part of the regular execution flow in a program, as the
   stack is.
 
-Heap Management Overview
-------------------------
+Simplified Heap Management Overview
+-----------------------------------
 
 image::images/heap_overview.png[align="center"]
 
@@ -1951,45 +1951,51 @@ Heap Metadata
 Examples for metadata that may be kept in hidden portions of heap memory:
 
 [role="incremental"]
-* a pointer to the next chunk, or to some data structure the chunk belongs to.
+* a pointer to the next chunk, or to some other data structure the chunk is a
+  part of.
 * state flags e.g. whether the chunk is currently allocated or not, and if any
   special allocation strategy was used.
-* the actual payload size of the chunk as visible to the caller of malloc().
+* the actual payload size of the chunk as visible to the caller of 'malloc()'.
 
 Heap Buffer Overflows
 ---------------------
+
+What can happen when a heap buffer write overflow occurs?
 
 [role="incremental"]
 * If the allocator keeps management data at the end of a heap chunk, then we
 may be able to overwrite this data in a way that causes interesting things to
 happen during `free()` time (triggering arbitrary memory writes is an aim
-here, when a crafted pointer is dereferenced and written to).
-* If the chunk we can overflow is followed by another heap chunk:
+here, when a crafted pointer is dereferenced and written to by the allocator
+algorithm).
+* If the chunk we can overflow is followed by another heap chunk currently in
+  use by the program:
 [role="incremental"]
 ** We could manipulate management data of the next heap chunk, in case the
 allocator keeps this data at the front of each chunk.
-** Otherwise we can manipulate some application specific data.
+** Otherwise (or in any case) we can manipulate some application specific data
+   found in the payload of the chunk.
 * If we can overflow into a member of a struct kept on the heap, then we might
 be able to influence other data in the struct to our advantage.
 * The heap allocator's algorithm will differ between 'glibc' versions,
 memory management wrappers and programming languages, so the exploits cannot be
 as generic as with stack buffer overflows.
 * On the "plus" side there are less protection mechanisms that apply to heap
-buffer overflows.
+buffer overflows, compared to the stack.
 
 Heap Specific Errors (I)
 ------------------------
 
-The heap has some additional error sources, that don't exist when dealing
-with stack memory. These mostly stem from the fact that memory has to be
-requested and freed explicitly by the programmer.
+Heap memory management involves some additional error types, that don't exist
+when dealing with stack memory. These mostly stem from the fact that memory
+has to be requested and freed explicitly by the programmer.
 
 [role="incremental"]
 === Memory Leaks
 
 [role="incremental"]
 These happen when the programmer forgets to call `free()` when heap memory
-is no longer used by the application.
+is no longer needed by the application.
 
 [role="incremental"]
 * Such memory leaks can be used to obtain a range of addresses for keeping
@@ -2035,10 +2041,10 @@ a program crash. The heap allocator can often detect this situation ("double
 free or corruption").
 
 [role="incremental"]
-A double free can also turn into use after free in some circumstances. This
-happens when a pointer is `free()'d` once, then another part of the program
-calls `malloc()` and receives the pointer previously `free()'d`, which is then
-wrongly passed a second time to `free()`.
+A double free can also turn into use after free. This happens when a pointer
+is `free()'d` once, then another part of the program calls `malloc()` and
+receives the pointer previously `free()'d`, which is then wrongly passed a
+second time to `free()`.
 
 Heap Uninitialized Data
 -----------------------
@@ -2050,7 +2056,8 @@ Heap Uninitialized Data
   contain sensitive application data from a different context.
 * This data could cause an information leak if read without initializing the
 data.
-* In worse cases, decisions may be based on uninitialized data.
+* Applications may base decisions on uninitialized data, resulting in
+  undefined and dangerous behaviour.
 
 Heap Exploit Techniques
 -----------------------
@@ -2062,8 +2069,8 @@ exploiting heap buffer overflow vulnerabilities.
 hit injected data or code. An extended technique is known as 'heap spraying'
 where the same data is placed on the heap a lot of times to increase the
 amount of valid addresses e.g. for executing code.
-* In combination with information leaks, this can then help determining the correct
-address for manipulations to work.
+* In combination with information leaks, this can then help finding a suitable
+memory address for manipulations to work.
 
 Heap Protection Mechanisms
 --------------------------
@@ -2074,9 +2081,10 @@ Heap Protection Mechanisms
 ** Safe coding practices as listed for stack vulnerabilities.
 ** ASLR also helps here, because the heap is randomly placed into the address
 space, too.
-** NX bit also applies to the heap, so executing it directly should be
-prevented, although there are other techniques like changing the PLT
-(Procedure Lookup Table) of the program.
+** The NX bit also applies to the heap, so executing it directly should be
+disallowed, although there are other techniques like changing the PLT
+(Procedure Lookup Table) of the program, which may allow to bypass such
+protections.
 * These are measures that could be taken, that depend on the allocator,
   however:
 [role="incremental"]
