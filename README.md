@@ -19,12 +19,14 @@ and Linux. The training covers the following topics:
 - Typical techniques to exploit a stack buffer overflow with the aim of
   arbitrary code execution. Various examples of growing complexity help to get
   in touch with the topic step by step.
+- Discussion of real-life stack buffer overflows in open source software.
 - Modern protection measures to prevent stack buffer exploits are discussed.
+- A somewhat shorter discussion of heap buffer overflows at the end.
 
 The examples are all tailored towards running them on current openSUSE Linux
 distributions.
 
-The material is used for a 3 to 4 day training for trainees in computer
+The material is used for a 4 to 5 day training for trainees in computer
 science. Due to the advanced nature of the topics also more experienced
 engineers that aren't familiar with low level programming and buffer overflows
 can profit at least from parts of the training.
