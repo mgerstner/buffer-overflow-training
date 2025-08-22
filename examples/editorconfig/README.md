@@ -214,11 +214,16 @@ A test of this works as follows:
 ```sh
 # install kate, if not already present
 $ sudo zypper in kate
+# create a debug build of editorconfig without sanitizer
+# this is necessary to make the test work and to cause a visible crash
+$ make clean
+$ cmake -DCMAKE_C_FLAGS="-g"
+$ make
 # enter the directory containing the compiled, vunlerable editorconfig libs
 $ cd editorconfig-c-core/lib
 # configure the dynamic linker to prefer libraries found in this directory
 $ export LD_LIBRARY_PATH=$PWD
-# now run the editor and open a file in a directory containing a crafter .editorconfig
+# now run the editor and open a file in a directory containing a crafted .editorconfig
 $ kate
 ```
 

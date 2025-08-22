@@ -72,7 +72,7 @@ Running sngrep
 The `sngrep` tool is capturing raw network packets from Ethernet network
 devices in the system. This is a privileged operation, that either needs full
 root privileges, or the `CAP_NET_RAW` capability. For our testing purposes we
-don't want to run a vulnerable utility on a life network. Instead we are
+don't want to run a vulnerable utility on a live network. Instead we are
 employing container techniques and split-off a separate Linux network
 namespace. This separate network namespace will only have an isolated loopback
 network device, not connected to any other components in the system.
@@ -103,7 +103,7 @@ this:
     (network-ns) $ ~/sngrep/install/usr/local/bin/sngrep -q -d lo -N
 
 This will disable all the terminal output of the tool and restrict listening
-to the loopback device. For passing network packets to it you can simply use
+to the loopback device. For passing network packets to it, you can simply use
 the netcat utility. It can be installed this way:
 
     root # zypper in netcat-openbsd
@@ -132,7 +132,7 @@ our exploit attempts.
 Approaching the Exploit
 -----------------------
 
-First try to get a feeling to the code we are dealing with here. The core of
+First try to get a feeling for the code we are dealing with here. The core of
 the packet processing logic involving the two stack buffer overflows is
 rather small. The function `parse_packet()` mentioned above is the central
 entry point for all packets that are captured. The buffer overflow in
@@ -200,7 +200,7 @@ Obstacles and their Solutions
 
 Check the `regexec(&calls.reg_valid, [...]` call in the function and the
 `strncpy()` that follows it. Which regex capture group is copied into the
-target buffer here? Why is that making a code execution exploit impossible?
+target buffer here? Why makes this a code execution exploit impossible?
 
 ### `sip_get_callid()` Overflow does not even Crash `sngrep`?
 
@@ -210,7 +210,7 @@ completely unimpressed, it is not even crashing.
 
 This situation stems from the kind of compiler optimization / reordering that
 happens here when `sngrep` is compiled with `-O2` optimizations. In the
-debugger when breaking execution in `sip_check_packet()`, inspect the
+debugger, when breaking execution in `sip_check_packet()`, inspect the
 addresses of the stack based buffers `callid`, `xcallid` and `payload` and
 their sizes. As it turns out the compiler places the large `payload` buffer
 first on the stack, only then the smaller `callid` and `xcallid` buffers. This
@@ -231,8 +231,8 @@ becomes possible.
 ### `sip_get_callid()` is a Zero Byte Terminated Buffer Overflow
 
 It is not that obvious at first, because the regular expression handling code
-is so careless and not checking and target buffer lengths at all. However,
-although the `regexec()` call also does not receive and source buffer length,
+is so careless and not checking any target buffer lengths at all. However,
+although the `regexec()` call also does not receive a source buffer length,
 it is a function that expects properly zero-terminated strings. Thus the
 regular expression will only consider payload content up to the first zero
 byte. This limits our exploit payload considerably. Our execve snippet from
